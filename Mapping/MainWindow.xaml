@@ -1,0 +1,66 @@
+﻿<Window x:Class="Maping.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Maping"
+        mc:Ignorable="d"
+        Title="Mapping" Height="762" Width="1367">
+    <Grid>
+        <DockPanel LastChildFill="False" Margin="0,0,0,25">
+            <Menu DockPanel.Dock="Top">
+                <MenuItem Header="_File">
+                    <MenuItem Header="_Open" />
+                    <MenuItem Header="_Save" />
+                    <MenuItem Header="_POI">
+                        <MenuItem Header="_Import" />
+                        <MenuItem Header="_Export" />
+                    </MenuItem>
+                    <MenuItem Header="_Travel">
+                        <MenuItem Header="_Import" />
+                        <MenuItem Header="_Export" />
+                    </MenuItem>
+                    <MenuItem Header="_Exit" />
+                </MenuItem>
+                <MenuItem Header="_Tools">
+                    <MenuItem Header="_About" />
+                    <MenuItem Header="_Options" />
+                </MenuItem>
+            </Menu>
+            <ToolBarTray DockPanel.Dock="Top" Height="30">
+                <ToolBar ToolBarTray.IsLocked="True">
+                    <Label>Manip:</Label>
+                    <ComboBox VerticalAlignment="Center" Width="120" Padding="5 2">
+                        <ComboBoxItem IsSelected="True" Content="Points of interest" />
+                        <ComboBoxItem Content="Travels" />
+                        <ComboBoxItem Content="Surfaces" />
+                    </ComboBox>
+                    <Separator Height="26" Margin="10 0 10 0" VerticalAlignment="Top" Width="1"/>
+                    <Button Background="LightGray" Padding="10 2">Sélectionner</Button>
+                    <Button Background="LightGray" Padding="10 2" Margin="4 0 0 0">Ajouter</Button>
+                    <Button Background="LightGray" Padding="10 2" Margin="4 0 0 0">Supprimer</Button>
+                    <Button Background="LightGray" Padding="10 2" Margin="4 0 0 0">Modifier</Button>
+                </ToolBar>
+            </ToolBarTray>
+            <Grid>
+                <StackPanel Width="200" Grid.RowSpan="3">
+                    <TextBlock FontSize="15">
+                        <TextBlock FontWeight="Bold" FontSize="12" Margin="0 0 7 0">#3</TextBlock>« Parc des Marais »
+                    </TextBlock>
+                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
+                    <TextBlock FontSize="15">
+                        <TextBlock FontWeight="Bold" FontSize="12" Margin="0 0 7 0">#12</TextBlock>Trajet <TextBlock FontWeight="Bold" FontSize="13">#3</TextBlock>
+                    </TextBlock>
+                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
+                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
+                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
+                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
+                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">153 km</TextBlock>
+                </StackPanel>
+                <GridSplitter Width="5" Grid.RowSpan="3" />
+                
+            </Grid>
+        </DockPanel>
+        <StatusBar Background="LightBlue" DockPanel.Dock="Bottom" Margin="0,744,0,0" />
+    </Grid>
+</Window>

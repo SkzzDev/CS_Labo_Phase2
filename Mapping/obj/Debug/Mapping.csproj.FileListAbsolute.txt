@@ -1,0 +1,14 @@
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\bin\Debug\Maping.exe.config
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\bin\Debug\Maping.exe
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\bin\Debug\Maping.pdb
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\Mapping.csprojAssemblyReference.cache
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\MainWindow.g.cs
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\App.g.cs
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\Maping_MarkupCompile.cache
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\Maping_MarkupCompile.lref
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\MainWindow.baml
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\Maping.g.resources
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\Maping.Properties.Resources.resources
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\Mapping.csproj.GenerateResource.cache
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\Maping.exe
+C:\Compilations\C#\Labos\Phase2\Mapping\Mapping\obj\Debug\Maping.pdb
