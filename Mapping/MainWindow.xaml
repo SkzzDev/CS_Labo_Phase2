@@ -1,13 +1,15 @@
-﻿<Window x:Class="Maping.MainWindow"
+﻿<Window x:Class="Mapping.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Maping"
         mc:Ignorable="d"
-        Title="Mapping" Height="762" Width="1367">
+        xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
+        xmlns:local="clr-namespace:Mapping"
+        Title="Mapping" Height="700" Width="1200"
+        ResizeMode="NoResize">
     <Grid>
-        <DockPanel LastChildFill="False" Margin="0,0,0,25">
+        <DockPanel LastChildFill="False" Margin="0,0,0,31">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Open" />
@@ -43,11 +45,18 @@
                 </ToolBar>
             </ToolBarTray>
             <Grid>
-                <StackPanel Width="200" Grid.RowSpan="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="200" MinWidth="200" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <StackPanel>
+                    <!--
                     <TextBlock FontSize="15">
                         <TextBlock FontWeight="Bold" FontSize="12" Margin="0 0 7 0">#3</TextBlock>« Parc des Marais »
-                    </TextBlock>
+                        </TextBlock>
                     <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
+
                     <TextBlock FontSize="15">
                         <TextBlock FontWeight="Bold" FontSize="12" Margin="0 0 7 0">#12</TextBlock>Trajet <TextBlock FontWeight="Bold" FontSize="13">#3</TextBlock>
                     </TextBlock>
@@ -55,12 +64,25 @@
                     <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
                     <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
                     <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
-                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">153 km</TextBlock>
+                    <TextBlock FontSize="13" FontStyle="Italic"  Margin="15 3 0 0" Foreground="Gray"><TextBlock FontWeight="Bold">Distance:</TextBlock> 153.574</TextBlock>
+                    -->
+                    <ListBox Name="lbCartographyObjects" HorizontalContentAlignment="Stretch" BorderThickness="0">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <WrapPanel>
+                                    <TextBlock FontSize="12" FontWeight="Bold" VerticalAlignment="Center">
+                                        #<TextBlock Text="{Binding Id}" />
+                                    </TextBlock>
+                                    <TextBlock Text="{Binding Description}" FontSize="15" Margin="6 0 0 0" />
+                                </WrapPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
                 </StackPanel>
-                <GridSplitter Width="5" Grid.RowSpan="3" />
-                
+                <GridSplitter Width="5" />
+                <m:Map x:Name="myMap" CredentialsProvider="Al5hPdpSYOAYzAbR0NdIjLBO7jzVnvk0WwhYe88mVmxiDSyrSZn8RSKvcjK3XlyX" Mode="Road" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" />
             </Grid>
         </DockPanel>
-        <StatusBar Background="LightBlue" DockPanel.Dock="Bottom" Margin="0,744,0,0" />
+        <StatusBar Background="LightBlue" DockPanel.Dock="Bottom" Margin="0,640,0,0" />
     </Grid>
 </Window>

@@ -12,8 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Microsoft.Maps.MapControl.WPF;
 
-namespace Maping
+using MyCartographyObjects;
+
+namespace Mapping
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -23,6 +26,27 @@ namespace Maping
         public MainWindow()
         {
             InitializeComponent();
+
+            List<CartoObj> cartoObjs = new List<CartoObj>() {
+                new POI(50.460554, 5.649703, "Maison"),
+                new POI(50.611265, 5.511353, "École"),
+                new POI(50.624466, 5.566776, "Liège Guillemin")
+            };
+
+            lbCartographyObjects.ItemsSource = cartoObjs;
+
+            myMap.Mode = new AerialMode(true);
+
+            myMap.MouseLeftButtonUp +=
+                new MouseButtonEventHandler(MapWithEvents_MouseLeftButtonUp);
+        }
+        void MapWithEvents_MouseLeftButtonUp(object sender, MouseEventArgs e)
+        {
+            // Updates the count of single mouse clicks.
+            Location location;
+            myMap.TryViewportPointToLocation(e.GetPosition(myMap), out location);
+            myMap.SetView(location, myMap.ZoomLevel);
+            
         }
     }
 }

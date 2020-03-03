@@ -5,6 +5,10 @@ VisualStudioVersion = 16.0.29728.190
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mapping", "Mapping\Mapping.csproj", "{8F0E3681-A8CE-4F2C-A1BA-0D65050940F3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyCartographyObjects", "MyCartographyObjects\MyCartographyObjects.csproj", "{A6BC25E4-E1CD-4EE3-895D-EC51E15312E6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZZUtils", "ZZUtils\ZZUtils.csproj", "{16AEB94A-108A-4F69-B212-66DBD168BC16}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{8F0E3681-A8CE-4F2C-A1BA-0D65050940F3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F0E3681-A8CE-4F2C-A1BA-0D65050940F3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8F0E3681-A8CE-4F2C-A1BA-0D65050940F3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A6BC25E4-E1CD-4EE3-895D-EC51E15312E6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A6BC25E4-E1CD-4EE3-895D-EC51E15312E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A6BC25E4-E1CD-4EE3-895D-EC51E15312E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A6BC25E4-E1CD-4EE3-895D-EC51E15312E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{16AEB94A-108A-4F69-B212-66DBD168BC16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16AEB94A-108A-4F69-B212-66DBD168BC16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16AEB94A-108A-4F69-B212-66DBD168BC16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16AEB94A-108A-4F69-B212-66DBD168BC16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

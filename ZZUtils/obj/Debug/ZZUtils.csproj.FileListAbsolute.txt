@@ -1,0 +1,6 @@
+C:\Compilations\C#\Labos\Phase2\ZZUtils\bin\Debug\ZZUtils.dll.config
+C:\Compilations\C#\Labos\Phase2\ZZUtils\bin\Debug\ZZUtils.dll
+C:\Compilations\C#\Labos\Phase2\ZZUtils\bin\Debug\ZZUtils.pdb
+C:\Compilations\C#\Labos\Phase2\ZZUtils\obj\Debug\ZZUtils.csprojAssemblyReference.cache
+C:\Compilations\C#\Labos\Phase2\ZZUtils\obj\Debug\ZZUtils.dll
+C:\Compilations\C#\Labos\Phase2\ZZUtils\obj\Debug\ZZUtils.pdb

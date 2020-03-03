@@ -1,7 +1,7 @@
-﻿<Application x:Class="Maping.App"
+﻿<Application x:Class="Mapping.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Maping"
+             xmlns:local="clr-namespace:Mapping"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

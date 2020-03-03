@@ -1,0 +1,9 @@
+C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\MyCartographyObjects.dll
+C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\MyCartographyObjects.pdb
+C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\ZZUtils.dll
+C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\ZZUtils.pdb
+C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\ZZUtils.dll.config
+C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\obj\Debug\MyCartographyObjects.csprojAssemblyReference.cache
+C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\obj\Debug\MyCartographyObjects.csproj.CopyComplete
+C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\obj\Debug\MyCartographyObjects.dll
+C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\obj\Debug\MyCartographyObjects.pdb
