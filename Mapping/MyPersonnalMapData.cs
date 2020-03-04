@@ -48,6 +48,11 @@ namespace Mapping
         {
             Firstname = firstname;
             Lastname = lastname;
+
+            // Default POIs present on the map
+            Add(new POI(50.460554, 5.649703, "Maison"));
+            Add(new POI(50.611265, 5.511353, "École"));
+            Add(new POI(50.624466, 5.566776, "Liège Guillemin"));
         }
 
         #endregion

@@ -17,6 +17,7 @@ namespace MyCartographyObjects
         private List<Coordonnees> _coordonnees;
         private Color _lineColor;
         private int _thickness;
+        private object _tag;
 
         #endregion
 
@@ -58,7 +59,11 @@ namespace MyCartographyObjects
             }
         }
 
-        public object Tag { get; set; }
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
+        }
 
         #endregion
 

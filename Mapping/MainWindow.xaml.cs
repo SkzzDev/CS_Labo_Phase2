@@ -39,9 +39,11 @@ namespace Mapping
             set { if (value >= 1 && value <= 4) _editMode = value; }
         }
 
+        public Point MouseDownPoisition { get; set; } = new Point();
+
         public List<Pushpin> Pushpins { get; set; } = new List<Pushpin>();
 
-        public MyPersonnalMapData Mapdata { get; set; }
+        public MyPersonnalMapData MapData { get; set; }
 
         #endregion
 
@@ -49,90 +51,112 @@ namespace Mapping
         {
             InitializeComponent();
 
-            Mapdata = new MyPersonnalMapData("Florent", "Banneux");
+            MapData = new MyPersonnalMapData("Florent", "Banneux");
 
-            Mapdata.Add(new POI(50.460554, 5.649703, "Maison"));
-            Mapdata.Add(new POI(50.611265, 5.511353, "École"));
-            Mapdata.Add(new POI(50.624466, 5.566776, "Liège Guillemin"));
+            DrawMapdataElements();
 
-            foreach (ICartoObj iCartoObj in Mapdata.CartoObjs) {
+            UpdateLbCartographyObjectsItemsSource();
+        }
+
+        private void DrawMapdataElements()
+        {
+            foreach (ICartoObj iCartoObj in MapData.CartoObjs) {
                 if (iCartoObj is POI poi) {
                     Pushpin newPushpin = new Pushpin {
                         Location = new Location(poi.Latitude, poi.Longitude)
                     };
                     Pushpins.Add(newPushpin);
                     iCartoObj.Tag = newPushpin;
+                    MyMap.Children.Add(newPushpin);
                 }
             }
+        }
 
-            LbCartographyObjects.ItemsSource = Mapdata.CartoObjs;
+        private void UpdateLbCartographyObjectsItemsSource()
+        {
+            LbCartographyObjects.ItemsSource = null;
+            LbCartographyObjects.ItemsSource = MapData.CartoObjs;
+        }
 
-            foreach (Pushpin pushpin in Pushpins) {
-                MyMap.Children.Add(pushpin);
-            }
+        private void MyMap_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MouseDownPoisition = new Point(e.GetPosition(MyMap).X, e.GetPosition(MyMap).Y);
         }
 
         private void MyMap_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            switch (EditMode) { // Selection mode
-                case 1:
-                    foreach (CartoObj cartoObj in Mapdata.CartoObjs) {
-                        Point clickPoint = e.GetPosition(MyMap);
-                        MyMap.TryViewportPointToLocation(clickPoint, out Location clickLocation);
-                        Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
-                        if (cartoObj.IsPointClose(clickCoordonnees, 0.001)) {
-                            // LbCartographyObjects
-                            // Change selected item in the ListBox
+            Point mouseUpPosition = new Point(e.GetPosition(MyMap).X, e.GetPosition(MyMap).Y);
+            if (mouseUpPosition == MouseDownPoisition) {
+                switch (EditMode) { // Selection mode
+                    case 1:
+                        bool elementSelected = false;
+                        for (int i = MapData.CartoObjs.Count() - 1; i >= 0; i--) { // Reverse loop because the last element is the first showed on screen
+                            ICartoObj iCartoObj = MapData.CartoObjs[i];
+                            Point clickPoint = e.GetPosition(MyMap);
+                            MyMap.TryViewportPointToLocation(clickPoint, out Location clickLocation);
+                            Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
+                            CartoObj cartoObj = iCartoObj as CartoObj;
+                            if (cartoObj.IsPointClose(clickCoordonnees, 0.0008)) {
+                                elementSelected = true;
+                                LbCartographyObjects.SelectedItem = iCartoObj;
+                                LbCartographyObjects.ScrollIntoView(iCartoObj);
+                            }
                         }
-                    }
-                    break;
-                case 2: // Add mode
-                    Location ClickLocation;
-                    MyMap.TryViewportPointToLocation(e.GetPosition(MyMap), out ClickLocation);
-                    switch (CbActionType.SelectedIndex) {
-                        case 0: // Point of interest
-                            POI newPOI = new POI(ClickLocation.Latitude, ClickLocation.Longitude, "Default");
-                            Mapdata.Add(newPOI);
-                            Pushpin newPushpin = new Pushpin {
-                                Location = ClickLocation
-                            };
-                            Pushpins.Add(newPushpin);
-                            MyMap.Children.Add(newPushpin);
-                            LbCartographyObjects.ItemsSource = null;
-                            LbCartographyObjects.ItemsSource = Mapdata.CartoObjs;
-                            break;
-                        case 1: // Travel
-                            break;
-                        case 2: // Surface
-                            break;
-                        default:
-                            MessageBox.Show(CbActionType.SelectedIndex.ToString());
-                            break;
-                    }
-                    break;
-                case 3: // Delete mode
-                    foreach (CartoObj cartoObj in Mapdata.CartoObjs) {
-                        Point clickPoint = e.GetPosition(MyMap);
-                        MyMap.TryViewportPointToLocation(clickPoint, out Location clickLocation);
-                        Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
-                        if (cartoObj.IsPointClose(clickCoordonnees, 0.001)) {
-                            MessageBox.Show("Near object!");
-                            ICartoObj iCartoObj = cartoObj as ICartoObj;
-                            Mapdata.Remove(iCartoObj);
-                            Pushpins.Remove((Pushpin)iCartoObj.Tag);
-                            LbCartographyObjects.ItemsSource = null;
-                            LbCartographyObjects.ItemsSource = Mapdata.CartoObjs;
+                        if (!elementSelected) {
+                            LbCartographyObjects.SelectedItem = null;
                         }
-                    }
-                    break;
-                case 4: // Update mode
-                    break;
+                        break;
+                    case 2: // Add mode
+                        Location ClickLocation;
+                        MyMap.TryViewportPointToLocation(e.GetPosition(MyMap), out ClickLocation);
+                        switch (CbActionType.SelectedIndex) {
+                            case 0: // Point of interest
+                                POI newPOI = new POI(ClickLocation.Latitude, ClickLocation.Longitude, "Default");
+                                MapData.Add(newPOI);
+                                Pushpin newPushpin = new Pushpin {
+                                    Location = ClickLocation
+                                };
+                                Pushpins.Add(newPushpin);
+                                MyMap.Children.Add(newPushpin);
+                                newPOI.Tag = newPushpin;
+                                UpdateLbCartographyObjectsItemsSource();
+                                break;
+                            case 1: // Travel
+                                break;
+                            case 2: // Surface
+                                break;
+                        }
+                        break;
+                    case 3: // Delete mode
+                        ICartoObj toRemove = new POI();
+                        for (int i = MapData.CartoObjs.Count() - 1; i >= 0; i--) { // Reverse loop because the last element is the first showed on screen
+                            ICartoObj iCartoObj = MapData.CartoObjs[i];
+                            Point clickPoint = e.GetPosition(MyMap);
+                            MyMap.TryViewportPointToLocation(clickPoint, out Location clickLocation);
+                            Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
+                            CartoObj cartoObj = iCartoObj as CartoObj;
+                            if (cartoObj.IsPointClose(clickCoordonnees, 0.0008)) {
+                                toRemove = iCartoObj;
+                                Pushpin PushpinToRemove = (Pushpin)iCartoObj.Tag;
+                                Pushpins.Remove(PushpinToRemove);
+                                MyMap.Children.Remove(PushpinToRemove);
+                                UpdateLbCartographyObjectsItemsSource();
+                                break;
+                            }
+                        }
+                        MapData.Remove(toRemove);
+                        break;
+                    case 4: // Update mode
+                        break;
+                }
             }
         }
 
-        private void ClickOnToolbarButton(int editMode)
+        private void ClickOnToolbarButton(int newEditMode)
         {
-            if (editMode != EditMode) {
+            if (newEditMode != 1)
+                LbCartographyObjects.SelectedItem = null;
+            if (newEditMode != EditMode) {
                 // Remove old selected button
                 Button clickedButton = BtnSelect;
                 switch (EditMode) {
@@ -151,8 +175,8 @@ namespace Mapping
                 clickedButton.Foreground = Brushes.Black;
 
                 // Set new selected button
-                EditMode = editMode;
-                switch (editMode) {
+                EditMode = newEditMode;
+                switch (newEditMode) {
                     case 1:
                         BtnSelect.Background = Brushes.DodgerBlue;
                         BtnSelect.Foreground = Brushes.White;
@@ -195,11 +219,15 @@ namespace Mapping
 
         private void LbCartographyObjects_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            CartoObj cartoObjSelected = (CartoObj)LbCartographyObjects.SelectedItem;
-            if (cartoObjSelected is Coordonnees coordonnee) {
-                Location location = new Location(coordonnee.Latitude, coordonnee.Longitude);
+            /* 
+             * Made to center the POI selected on the map, but bug due to mouse movements etc
+             * 
+            if (LbCartographyObjects.SelectedItem is POI poi) {
+                Location location = new Location(poi.Latitude, poi.Longitude);
                 MyMap.SetView(location, MyMap.ZoomLevel);
             }
+            */
         }
+
     }
 }

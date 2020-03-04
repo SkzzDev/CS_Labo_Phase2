@@ -18,6 +18,7 @@ namespace MyCartographyObjects
         private Color _backgroundColor;
         private Color _borderColor;
         private double _oppacity = 1;
+        private object _tag;
 
         #endregion
 
@@ -64,7 +65,11 @@ namespace MyCartographyObjects
             }
         }
 
-        public object Tag { get; set; }
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
+        }
 
         #endregion
 

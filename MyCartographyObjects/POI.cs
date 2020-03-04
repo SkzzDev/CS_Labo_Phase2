@@ -12,6 +12,7 @@ namespace MyCartographyObjects
         #region MemberVars
 
         private string _description;
+        private object _tag;
 
         #endregion
 
@@ -23,7 +24,11 @@ namespace MyCartographyObjects
             set { _description = value; }
         }
 
-        public object Tag { get; set; }
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
+        }
 
         #endregion
 

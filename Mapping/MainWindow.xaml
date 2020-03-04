@@ -69,7 +69,7 @@
                     -->
 
                     <Label Content="Elements created:" />
-                    <ListBox Name="LbCartographyObjects" HorizontalContentAlignment="Stretch" BorderThickness="0" SelectionChanged="LbCartographyObjects_SelectionChanged">
+                    <ListBox Name="LbCartographyObjects" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="LbCartographyObjects_SelectionChanged" Height="566">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <WrapPanel>
@@ -83,7 +83,7 @@
                     </ListBox>
                 </StackPanel>
                 <GridSplitter Width="5" />
-                <m:Map x:Name="MyMap" CredentialsProvider="Ao1GPsO8BXk9YeDjuGdzrMpZUxqDmPWN5rTG2YcquymwSrdQ6jcLv-Ujbaq8r1sr" Mode="Road" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" MouseLeftButtonUp="MyMap_MouseLeftButtonUp" />
+                <m:Map x:Name="MyMap" CredentialsProvider="Ao1GPsO8BXk9YeDjuGdzrMpZUxqDmPWN5rTG2YcquymwSrdQ6jcLv-Ujbaq8r1sr" Mode="Road" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" MouseLeftButtonUp="MyMap_MouseLeftButtonUp" MouseLeftButtonDown="MyMap_MouseLeftButtonDown" />
             </Grid>
         </DockPanel>
         <StatusBar Background="LightBlue" DockPanel.Dock="Bottom" Margin="0,640,0,0" />

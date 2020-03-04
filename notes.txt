@@ -1,4 +1,11 @@
-BtnSelect.Click += BtnSelect_Click; vs ajouter BtnSelect_Click dans la fenêtre Properties, quelle(s) différence(s)?
+### Problèmes:
 
-MyMap.SetView(location, MyMap.ZoomLevel);
-> Bug lorsqu'elle est appellée plus d'une fois trop rapidement, elle renvoit totalement ailleurs
+	MyMap.SetView(location, MyMap.ZoomLevel);
+	> Bug lorsqu'elle est appellée plus d'une fois trop rapidement, elle renvoit totalement ailleurs
+
+	L'event MouseMove est appellé lors d'un MouseDown et/ou MouseUp, même si la souris n'a pas bougé
+
+
+### To do list:
+
+	Lors qu'on ajoute un POI, si on clique quelque part, qu'on bouge la souris en drag, et qu'on revient pile au même pixel, le POI s'ajoute
