@@ -83,7 +83,7 @@ namespace MyCartographyObjects
 
         #region Constructors
 
-        public Polyline(Color lineColor, double opacity = 0.8, int thickness = 3, string description = "") : base() // Main initialisation constructor
+        public Polyline(Color lineColor, double opacity = 0.8, int thickness = 3, string description = "Travel") : base() // Main initialisation constructor
         {
             LineColor = lineColor;
             Opacity = opacity;

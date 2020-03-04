@@ -89,7 +89,7 @@ namespace MyCartographyObjects
 
         #region Constructors
 
-        public Polygon(Color backgroundColor, Color borderColor, double oppacity = 0.8, int thickness = 3, string description = "") : base() // Main initialisation constructor
+        public Polygon(Color backgroundColor, Color borderColor, double oppacity = 0.8, int thickness = 3, string description = "Surface") : base() // Main initialisation constructor
         {
             BackgroundColor = backgroundColor;
             BorderColor = borderColor;
@@ -184,16 +184,16 @@ namespace MyCartographyObjects
                     } else {
                         double m = dy / dx, p = previousPoint.Y - m * previousPoint.X;
                         double slopeAngle = ZZMath.SlopeAngle(previousPoint, anglePoint);
+                        double fx = m * nextPoint.X + p;
                         if (slopeAngle < 90 || slopeAngle > 270) { // The point needs to be below the line
-                            if (nextPoint.Y < m * nextPoint.Y + p) sign = -1;
+                            if (nextPoint.Y < m * nextPoint.X + p) sign = -1;
                         } else { // The point needs to be above the line
-                            if (nextPoint.Y > m * nextPoint.Y + p) sign = -1;
+                            if (nextPoint.Y > m * nextPoint.X + p) sign = -1;
                         }
                     }
                     sumAngle += sign * alpha;
                 }
-                Console.WriteLine(sumAngle);
-                return (sumAngle == 360); // To be inside, the total of the angles needs to equal 360
+                return (sumAngle > 359); // To be inside, the total of the angles needs to be above 359 (basicly == 360 but double precision doesn't always makes it work)
             }
             return false;
         }

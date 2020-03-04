@@ -28,12 +28,11 @@ namespace ZZUtils
         public static double GetDistancePointToLine(ZZCoordinate firstPoint, ZZCoordinate secondPoint, ZZCoordinate toCheck)
         {
             // Calculation of the triangle' sides' length
-            double b = ZZMath.GetDistance(firstPoint, toCheck);
-            double c = ZZMath.GetDistance(firstPoint, secondPoint);
+            double b = GetDistance(firstPoint, toCheck);
+            double c = GetDistance(firstPoint, secondPoint);
 
             // Calculation of one of the angle attached to the straight line
-            double angleFirstPoint = ZZMath.AngleFrom3Points(secondPoint, firstPoint, toCheck, true);
-            // double angleA = angleARadian / (Math.PI / 180.0); // Falcultative: to know the angle in degrees
+            double angleFirstPoint = AngleFrom3Points(secondPoint, firstPoint, toCheck, false);
 
             double h = b * Math.Sin(angleFirstPoint); // Perpendicular distance
 
@@ -61,7 +60,7 @@ namespace ZZUtils
 
             // Calculation of one of the angle attached to the straight line
             double alpha = Math.Acos((-Math.Pow(a, 2) + Math.Pow(b, 2) + Math.Pow(c, 2)) / (2 * b * c));
-            return (degres) ? alpha * (180 / Math.PI) : alpha;
+            return (degres) ? ToDegrees(alpha) : alpha;
         }
 
         public static double SlopeAngle(ZZCoordinate firstPoint, ZZCoordinate nextPoint, bool degres = true)
@@ -74,14 +73,12 @@ namespace ZZUtils
             } else if (dy == 0) { // Horizontal slope
                 slopeAngle = (dx > 0) ? 0 : 180; // Right / Left
             } else {
-                slopeAngle = ZZMath.ToDegrees(Math.Atan(dy / dx));
-                if (dx < 0)
-                    slopeAngle += 180;
-                else if (dy < 0)
-                    slopeAngle += 360; // Because ATan return a negative angle in the 2th and 4th quarter, but the 2th is made positive thanks to the +180
+                slopeAngle = ToDegrees(Math.Atan(dy / dx));
+                if (dx < 0) slopeAngle += 180;
             }
+            slopeAngle = ZZFunctions.nmod(slopeAngle, 360);
 
-            return (degres) ? slopeAngle : ZZMath.ToRadians(slopeAngle);
+            return (degres) ? slopeAngle : ToRadians(slopeAngle);
         }
 
         public static double ToRadians(double degreeAngle)

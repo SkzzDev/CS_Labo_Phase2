@@ -28,6 +28,7 @@ namespace Mapping
         #region MemberVars
 
         private int _editMode = 1; // 1: Select, 2: Add, 3: Remove, 4: Update
+        public static double _PRECISION = 0.0005;
 
         #endregion
 
@@ -220,7 +221,7 @@ namespace Mapping
                             MyMap.TryViewportPointToLocation(clickPoint, out Location clickLocation);
                             Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
                             CartoObj cartoObj = iCartoObj as CartoObj;
-                            if (cartoObj.IsPointClose(clickCoordonnees, 0.0008)) {
+                            if (cartoObj.IsPointClose(clickCoordonnees, _PRECISION)) {
                                 elementSelected = true;
                                 LbCartographyObjects.SelectedItem = iCartoObj;
                                 LbCartographyObjects.ScrollIntoView(iCartoObj);
@@ -245,7 +246,7 @@ namespace Mapping
                                 UpdateLbCartographyObjectsItemsSource();
                                 break;
                             case 1: // Travel
-                                MapPolyline mapPolyline = (MapPolyline)CurrentTravel.Tag;
+                                MapPolyline mapPolyline = (MapPolyline)(CurrentTravel.Tag);
                                 if (!IsDrawingTravel) {
                                     ResetCurrentSurface();
                                     IsDrawingTravel = true;
@@ -256,14 +257,14 @@ namespace Mapping
                                 mapPolyline.Locations.Add(ClickLocation);
                                 break;
                             case 2: // Surface
-                                MapPolygon mapPolygon = (MapPolygon)CurrentSurface.Tag;
+                                MapPolygon mapPolygon = (MapPolygon)(CurrentSurface.Tag);
                                 if (!IsDrawingSurface) {
                                     ResetCurrentTravel();
                                     IsDrawingSurface = true;
                                     MyMap.Children.Add(mapPolygon);
                                 }
                                 newCoordonnee = new Coordonnees(ClickLocation.Latitude, ClickLocation.Longitude);
-                                CurrentTravel.Coordonnees.Add(newCoordonnee);
+                                CurrentSurface.Coordonnees.Add(newCoordonnee);
                                 mapPolygon.Locations.Add(ClickLocation);
                                 break;
                         }
@@ -277,17 +278,17 @@ namespace Mapping
                             MyMap.TryViewportPointToLocation(clickPoint, out Location clickLocation);
                             Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
                             CartoObj cartoObj = iCartoObj as CartoObj;
-                            if (cartoObj.IsPointClose(clickCoordonnees, 0.0008)) {
+                            if (cartoObj.IsPointClose(clickCoordonnees, _PRECISION)) {
                                 somethingToRemove = true;
                                 toRemove = iCartoObj;
                                 if (iCartoObj is POI poi) {
                                     Pushpin pushpinToRemove = (Pushpin)poi.Tag;
                                     MyMap.Children.Remove(pushpinToRemove);
                                 } else if (iCartoObj is MyCartographyObjects.Polyline polyline) {
-                                    MapPolyline mapPolylineToRemove = (MapPolyline)polyline.Tag;
+                                    MapPolyline mapPolylineToRemove = (MapPolyline)(polyline.Tag);
                                     MyMap.Children.Remove(mapPolylineToRemove);
                                 } else if (iCartoObj is MyCartographyObjects.Polygon polygon) {
-                                    MapPolygon mapPolygonToRemove = (MapPolygon)polygon.Tag;
+                                    MapPolygon mapPolygonToRemove = (MapPolygon)(polygon.Tag);
                                     MyMap.Children.Remove(mapPolygonToRemove);
                                 }
                                 UpdateLbCartographyObjectsItemsSource();
@@ -341,8 +342,9 @@ namespace Mapping
         {
             if (e.Key == Key.Enter && Keyboard.IsKeyDown(Key.LeftCtrl)) { // CTRL + Enter
                 if (IsDrawingTravel) {
-                    MapData.Add(new MyCartographyObjects.Polyline(CurrentTravel));
-                    MapPolyline currentTravelMapPolyline = (MapPolyline)CurrentTravel.Tag;
+                    MyCartographyObjects.Polyline newPolyline = new MyCartographyObjects.Polyline(CurrentTravel);
+                    MapData.Add(newPolyline);
+                    MapPolyline currentTravelMapPolyline = (MapPolyline)(CurrentTravel.Tag);
                     MapPolyline newMapPolyline = new MapPolyline() {
                         Stroke = currentTravelMapPolyline.Stroke,
                         StrokeThickness = currentTravelMapPolyline.StrokeThickness,
@@ -353,21 +355,24 @@ namespace Mapping
                         newMapPolyline.Locations.Add(location);
                     }
                     MyMap.Children.Add(newMapPolyline);
+                    newPolyline.Tag = newMapPolyline;
                     ResetCurrentTravel();
                 } else if (IsDrawingSurface) {
-                    MapData.Add(new MyCartographyObjects.Polygon(CurrentSurface));
-                    MapPolygon currentTravelMapPolygon = (MapPolygon)CurrentSurface.Tag;
+                    MyCartographyObjects.Polygon newPolygon = new MyCartographyObjects.Polygon(CurrentSurface);
+                    MapData.Add(newPolygon);
+                    MapPolygon currentSurfaceMapPolygon = (MapPolygon)(CurrentSurface.Tag);
                     MapPolygon newMapPolygon = new MapPolygon() {
-                        Fill = currentTravelMapPolygon.Fill,
-                        Stroke = currentTravelMapPolygon.Stroke,
-                        StrokeThickness = currentTravelMapPolygon.StrokeThickness,
-                        Opacity = currentTravelMapPolygon.Opacity,
+                        Fill = currentSurfaceMapPolygon.Fill,
+                        Stroke = currentSurfaceMapPolygon.Stroke,
+                        StrokeThickness = currentSurfaceMapPolygon.StrokeThickness,
+                        Opacity = currentSurfaceMapPolygon.Opacity,
                         Locations = new LocationCollection()
                     };
-                    foreach (Location location in currentTravelMapPolygon.Locations) {
+                    foreach (Location location in currentSurfaceMapPolygon.Locations) {
                         newMapPolygon.Locations.Add(location);
                     }
                     MyMap.Children.Add(newMapPolygon);
+                    newPolygon.Tag = newMapPolygon;
                     ResetCurrentSurface();
                 }
             }

@@ -63,8 +63,8 @@ namespace MyCartographyObjects
         public static explicit operator ZZCoordinate(Coordonnees coord)
         {
             ZZCoordinate zzCoord = new ZZCoordinate();
-            zzCoord.X = (double) coord.Latitude;
-            zzCoord.Y = (double) coord.Longitude;
+            zzCoord.X = (double) coord.Longitude;
+            zzCoord.Y = (double) coord.Latitude;
             zzCoord.Z = 0;
             return zzCoord;
         }
