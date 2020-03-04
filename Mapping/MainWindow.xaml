@@ -3,8 +3,8 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d"
         xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
+        mc:Ignorable="d"
         xmlns:local="clr-namespace:Mapping"
         Title="Mapping" Height="700" Width="1200"
         ResizeMode="NoResize">
@@ -31,17 +31,18 @@
             </Menu>
             <ToolBarTray DockPanel.Dock="Top" Height="30">
                 <ToolBar ToolBarTray.IsLocked="True">
-                    <Label>Manip:</Label>
+                    <Label Content="Choose a type:"/>
                     <ComboBox VerticalAlignment="Center" Width="120" Padding="5 2">
                         <ComboBoxItem IsSelected="True" Content="Points of interest" />
                         <ComboBoxItem Content="Travels" />
                         <ComboBoxItem Content="Surfaces" />
                     </ComboBox>
                     <Separator Height="26" Margin="10 0 10 0" VerticalAlignment="Top" Width="1"/>
-                    <Button Background="LightGray" Padding="10 2">Sélectionner</Button>
-                    <Button Background="LightGray" Padding="10 2" Margin="4 0 0 0">Ajouter</Button>
-                    <Button Background="LightGray" Padding="10 2" Margin="4 0 0 0">Supprimer</Button>
-                    <Button Background="LightGray" Padding="10 2" Margin="4 0 0 0">Modifier</Button>
+                    <Label Content="Choose an action:"/>
+                    <Button x:Name="BtnSelect" Background="DodgerBlue" Foreground="White" Padding="10 2" Click="BtnSelect_Click">Select</Button>
+                    <Button x:Name="BtnAdd" Background="LightGray" Padding="10 2" Margin="4 0 0 0">Add</Button>
+                    <Button x:Name="BtnRemove" Background="LightGray" Padding="10 2" Margin="4 0 0 0">Remove</Button>
+                    <Button x:Name="BtnUpdate" Background="LightGray" Padding="10 2" Margin="4 0 0 0">Update</Button>
                 </ToolBar>
             </ToolBarTray>
             <Grid>
@@ -50,7 +51,7 @@
                     <ColumnDefinition Width="5" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
-                <StackPanel>
+                <StackPanel Margin="0,0,5,0">
                     <!--
                     <TextBlock FontSize="15">
                         <TextBlock FontWeight="Bold" FontSize="12" Margin="0 0 7 0">#3</TextBlock>« Parc des Marais »
@@ -66,7 +67,9 @@
                     <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
                     <TextBlock FontSize="13" FontStyle="Italic"  Margin="15 3 0 0" Foreground="Gray"><TextBlock FontWeight="Bold">Distance:</TextBlock> 153.574</TextBlock>
                     -->
-                    <ListBox Name="lbCartographyObjects" HorizontalContentAlignment="Stretch" BorderThickness="0">
+
+                    <Label Content="Elements created:" />
+                    <ListBox Name="LbCartographyObjects" HorizontalContentAlignment="Stretch" BorderThickness="0">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <WrapPanel>
@@ -80,7 +83,7 @@
                     </ListBox>
                 </StackPanel>
                 <GridSplitter Width="5" />
-                <m:Map x:Name="myMap" CredentialsProvider="Al5hPdpSYOAYzAbR0NdIjLBO7jzVnvk0WwhYe88mVmxiDSyrSZn8RSKvcjK3XlyX" Mode="Road" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" />
+                <m:Map x:Name="MyMap" CredentialsProvider="Ao1GPsO8BXk9YeDjuGdzrMpZUxqDmPWN5rTG2YcquymwSrdQ6jcLv-Ujbaq8r1sr" Mode="Road" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" />
             </Grid>
         </DockPanel>
         <StatusBar Background="LightBlue" DockPanel.Dock="Bottom" Margin="0,640,0,0" />

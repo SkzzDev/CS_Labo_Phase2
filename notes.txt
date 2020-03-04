@@ -1,0 +1,4 @@
+BtnSelect.Click += BtnSelect_Click; vs ajouter BtnSelect_Click dans la fenêtre Properties, quelle(s) différence(s)?
+
+MyMap.SetView(location, MyMap.ZoomLevel);
+> Bug lorsqu'elle est appellée plus d'une fois trop rapidement, elle renvoit totalement ailleurs

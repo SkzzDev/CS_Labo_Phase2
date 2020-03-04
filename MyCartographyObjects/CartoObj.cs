@@ -47,7 +47,7 @@ namespace MyCartographyObjects
         {
             return GetType() + " (#" + Id.ToString() + ")";
         }
-
+        
         public virtual void Draw()
         {
             Console.WriteLine(this);
