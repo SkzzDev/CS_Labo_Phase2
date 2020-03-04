@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MyCartographyObjects
 {
-    public class POI : Coordonnees
+    public class POI : Coordonnees, ICartoObj
     {
 
         #region MemberVars
@@ -22,6 +22,8 @@ namespace MyCartographyObjects
             get { return _description; }
             set { _description = value; }
         }
+
+        public object Tag { get; set; }
 
         #endregion
 

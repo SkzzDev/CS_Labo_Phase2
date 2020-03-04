@@ -9,7 +9,7 @@ using ZZUtils;
 
 namespace MyCartographyObjects
 {
-    public class Polygon : CartoObj, IPointy
+    public class Polygon : CartoObj, IPointy, ICartoObj
     {
 
         #region MemberVars
@@ -63,6 +63,8 @@ namespace MyCartographyObjects
                 return total;
             }
         }
+
+        public object Tag { get; set; }
 
         #endregion
 

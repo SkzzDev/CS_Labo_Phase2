@@ -32,5 +32,4 @@ C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\Mapping.csproj.GenerateResourc
 C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\Mapping.csproj.CopyComplete
 C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\Maping.exe
 C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\Maping.pdb
-C:\Compilations\C#\Labos\Phase2\Mapping\bin\Debug\Microsoft.Maps.MapControl.WPF.dll
 C:\Compilations\C#\Labos\Phase2\Mapping\bin\Debug\Microsoft.Maps.MapControl.WPF.xml

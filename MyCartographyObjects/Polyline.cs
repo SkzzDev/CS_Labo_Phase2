@@ -9,7 +9,7 @@ using ZZUtils;
 
 namespace MyCartographyObjects
 {
-    public class Polyline : CartoObj, IPointy, IEquatable<Polyline>
+    public class Polyline : CartoObj, IPointy, IEquatable<Polyline>, ICartoObj
     {
 
         #region MemberVars
@@ -57,6 +57,8 @@ namespace MyCartographyObjects
                 return total;
             }
         }
+
+        public object Tag { get; set; }
 
         #endregion
 

@@ -32,7 +32,7 @@
             <ToolBarTray DockPanel.Dock="Top" Height="30">
                 <ToolBar ToolBarTray.IsLocked="True">
                     <Label Content="Choose a type:"/>
-                    <ComboBox VerticalAlignment="Center" Width="120" Padding="5 2">
+                    <ComboBox x:Name="CbActionType" VerticalAlignment="Center" Width="120" Padding="5 2">
                         <ComboBoxItem IsSelected="True" Content="Points of interest" />
                         <ComboBoxItem Content="Travels" />
                         <ComboBoxItem Content="Surfaces" />
@@ -40,9 +40,9 @@
                     <Separator Height="26" Margin="10 0 10 0" VerticalAlignment="Top" Width="1"/>
                     <Label Content="Choose an action:"/>
                     <Button x:Name="BtnSelect" Background="DodgerBlue" Foreground="White" Padding="10 2" Click="BtnSelect_Click">Select</Button>
-                    <Button x:Name="BtnAdd" Background="LightGray" Padding="10 2" Margin="4 0 0 0">Add</Button>
-                    <Button x:Name="BtnRemove" Background="LightGray" Padding="10 2" Margin="4 0 0 0">Remove</Button>
-                    <Button x:Name="BtnUpdate" Background="LightGray" Padding="10 2" Margin="4 0 0 0">Update</Button>
+                    <Button x:Name="BtnAdd" Background="LightGray" Padding="10 2" Margin="4 0 0 0" Click="BtnAdd_Click">Add</Button>
+                    <Button x:Name="BtnRemove" Background="LightGray" Padding="10 2" Margin="4 0 0 0" Click="BtnRemove_Click">Remove</Button>
+                    <Button x:Name="BtnUpdate" Background="LightGray" Padding="10 2" Margin="4 0 0 0" Click="BtnUpdate_Click">Update</Button>
                 </ToolBar>
             </ToolBarTray>
             <Grid>
@@ -69,7 +69,7 @@
                     -->
 
                     <Label Content="Elements created:" />
-                    <ListBox Name="LbCartographyObjects" HorizontalContentAlignment="Stretch" BorderThickness="0">
+                    <ListBox Name="LbCartographyObjects" HorizontalContentAlignment="Stretch" BorderThickness="0" SelectionChanged="LbCartographyObjects_SelectionChanged">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
                                 <WrapPanel>
@@ -83,7 +83,7 @@
                     </ListBox>
                 </StackPanel>
                 <GridSplitter Width="5" />
-                <m:Map x:Name="MyMap" CredentialsProvider="Ao1GPsO8BXk9YeDjuGdzrMpZUxqDmPWN5rTG2YcquymwSrdQ6jcLv-Ujbaq8r1sr" Mode="Road" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" />
+                <m:Map x:Name="MyMap" CredentialsProvider="Ao1GPsO8BXk9YeDjuGdzrMpZUxqDmPWN5rTG2YcquymwSrdQ6jcLv-Ujbaq8r1sr" Mode="Road" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" MouseLeftButtonUp="MyMap_MouseLeftButtonUp" />
             </Grid>
         </DockPanel>
         <StatusBar Background="LightBlue" DockPanel.Dock="Bottom" Margin="0,640,0,0" />

@@ -43,6 +43,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CartoObj.cs" />
+    <Compile Include="ICartoObj.cs" />
     <Compile Include="IIsPointClose.cs" />
     <Compile Include="IPointy.cs" />
     <Compile Include="MyCartoObjCoordonneesComparer.cs" />
