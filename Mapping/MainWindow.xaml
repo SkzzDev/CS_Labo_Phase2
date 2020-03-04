@@ -9,7 +9,7 @@
         Title="Mapping" Height="700" Width="1200"
         ResizeMode="NoResize">
     <Grid>
-        <DockPanel LastChildFill="False" Margin="0,0,0,31">
+        <DockPanel LastChildFill="False">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
                     <MenuItem Header="_Open" />
@@ -45,6 +45,7 @@
                     <Button x:Name="BtnUpdate" Background="LightGray" Padding="10 2" Margin="4 0 0 0" Click="BtnUpdate_Click">Update</Button>
                 </ToolBar>
             </ToolBarTray>
+            <StatusBar Background="LightBlue" DockPanel.Dock="Bottom" Height="30" />
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="200" MinWidth="200" />
@@ -52,22 +53,6 @@
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
                 <StackPanel Margin="0,0,5,0">
-                    <!--
-                    <TextBlock FontSize="15">
-                        <TextBlock FontWeight="Bold" FontSize="12" Margin="0 0 7 0">#3</TextBlock>« Parc des Marais »
-                        </TextBlock>
-                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
-
-                    <TextBlock FontSize="15">
-                        <TextBlock FontWeight="Bold" FontSize="12" Margin="0 0 7 0">#12</TextBlock>Trajet <TextBlock FontWeight="Bold" FontSize="13">#3</TextBlock>
-                    </TextBlock>
-                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
-                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
-                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
-                    <TextBlock FontSize="13" Margin="15 0 0 0" Foreground="Gray">(57.4568, 5.7126)</TextBlock>
-                    <TextBlock FontSize="13" FontStyle="Italic"  Margin="15 3 0 0" Foreground="Gray"><TextBlock FontWeight="Bold">Distance:</TextBlock> 153.574</TextBlock>
-                    -->
-
                     <Label Content="Elements created:" />
                     <ListBox Name="LbCartographyObjects" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="LbCartographyObjects_SelectionChanged" Height="566">
                         <ListBox.ItemTemplate>
@@ -86,6 +71,5 @@
                 <m:Map x:Name="MyMap" CredentialsProvider="Ao1GPsO8BXk9YeDjuGdzrMpZUxqDmPWN5rTG2YcquymwSrdQ6jcLv-Ujbaq8r1sr" Mode="Road" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" MouseLeftButtonUp="MyMap_MouseLeftButtonUp" MouseLeftButtonDown="MyMap_MouseLeftButtonDown" />
             </Grid>
         </DockPanel>
-        <StatusBar Background="LightBlue" DockPanel.Dock="Bottom" Margin="0,640,0,0" />
     </Grid>
 </Window>
