@@ -59,14 +59,14 @@ namespace Mapping
 
         #region Functions
 
-        public void Add(ICartoObj cartoObj)
+        public void Add(ICartoObj iCartoObj)
         {
-            CartoObjs.Add(cartoObj);
+            CartoObjs.Add(iCartoObj);
         }
 
-        public void Remove(ICartoObj cartoObj)
+        public void Remove(ICartoObj iCartoObj)
         {
-            CartoObjs.Remove(cartoObj);
+            CartoObjs.Remove(iCartoObj);
         }
 
         public void Export()

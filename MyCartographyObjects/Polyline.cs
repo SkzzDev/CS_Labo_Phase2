@@ -14,9 +14,11 @@ namespace MyCartographyObjects
 
         #region MemberVars
 
-        private List<Coordonnees> _coordonnees;
+        private List<Coordonnees> _coordonnees = new List<Coordonnees>();
         private Color _lineColor;
         private int _thickness;
+        private double _oppacity;
+        private string _description;
         private object _tag;
 
         #endregion
@@ -41,6 +43,24 @@ namespace MyCartographyObjects
             set { _thickness = value; }
         }
 
+        public double Opacity
+        {
+            get { return _oppacity; }
+            set { _oppacity = value; }
+        }
+
+        public string Description
+        {
+            get { return _description; }
+            set { _description = value; }
+        }
+
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
+        }
+
         public int NbPoints
         {
             get {
@@ -59,30 +79,33 @@ namespace MyCartographyObjects
             }
         }
 
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-
         #endregion
 
         #region Constructors
 
-        public Polyline(List<Coordonnees> coordCollection, Color lineColor, int thickness = 1) : base() // Main initialisation constructor
+        public Polyline(Color lineColor, double opacity = 0.8, int thickness = 3, string description = "") : base() // Main initialisation constructor
         {
-            Coordonnees = coordCollection;
             LineColor = lineColor;
+            Opacity = opacity;
             Thickness = thickness;
+            Description = description;
         }
 
-        public Polyline(List<Coordonnees> coordCollection) : this(coordCollection, Colors.WhiteSmoke) { }  // Other initialisation constructor
+        public Polyline(Polyline polyline) : this(polyline.LineColor, polyline.Opacity, polyline.Thickness, polyline.Description) // Copy constructor - From a polyline
+        {
+            foreach (Coordonnees coordonnee in polyline.Coordonnees) {
+                Add(new Coordonnees(coordonnee));
+            }
+        }
 
-        public Polyline(Polyline polyline) : this(polyline.Coordonnees, polyline.LineColor, polyline.Thickness) { }  // Copy constructor - From a polyline
+        public Polyline(Polygon polygon) : this(polygon.BorderColor, polygon.Opacity, polygon.Thickness, polygon.Description) // Copy constructor - From a polygon
+        {
+            foreach (Coordonnees coordonnee in polygon.Coordonnees) {
+                Add(new Coordonnees(coordonnee));
+            }
+        }
 
-        public Polyline(Polygon polygon) : this(polygon.Coordonnees, Colors.WhiteSmoke) { }  // Copy constructor - From a polygon
-
-        public Polyline() : this(new List<Coordonnees>(), Colors.WhiteSmoke) { } // Default constructor
+        public Polyline() : this(Colors.Red) { } // Default constructor
 
         #endregion
 
@@ -100,6 +123,11 @@ namespace MyCartographyObjects
         public override void Draw()
         {
             base.Draw();
+        }
+
+        public void Add(Coordonnees coordonneeToAdd)
+        {
+            Coordonnees.Add(coordonneeToAdd);
         }
 
         public override bool IsPointClose(Coordonnees toCheck, double precision)

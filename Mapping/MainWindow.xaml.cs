@@ -27,7 +27,7 @@ namespace Mapping
 
         #region MemberVars
 
-        private int _editMode = 1; // 1: Select, 2: Add, 3: Delete, 4: Update
+        private int _editMode = 1; // 1: Select, 2: Add, 3: Remove, 4: Update
 
         #endregion
 
@@ -39,9 +39,21 @@ namespace Mapping
             set { if (value >= 1 && value <= 4) _editMode = value; }
         }
 
-        public Point MouseDownPoisition { get; set; } = new Point();
+        #region Surface
 
-        public List<Pushpin> Pushpins { get; set; } = new List<Pushpin>();
+        public MyCartographyObjects.Polygon CurrentSurface { get; set; }
+        public bool IsDrawingSurface { get; set; } = false;
+
+        #endregion
+
+        #region Travel
+
+        public MyCartographyObjects.Polyline CurrentTravel { get; set; }
+        public bool IsDrawingTravel { get; set; } = false;
+
+        #endregion
+
+        public Point MouseLeftButtonDownPoisition { get; set; } = new Point();
 
         public MyPersonnalMapData MapData { get; set; }
 
@@ -53,10 +65,28 @@ namespace Mapping
 
             MapData = new MyPersonnalMapData("Florent", "Banneux");
 
+            CurrentTravel = new MyCartographyObjects.Polyline();
+            CurrentTravel.Tag = new MapPolyline() {
+                Stroke = new SolidColorBrush(CurrentTravel.LineColor),
+                StrokeThickness = CurrentTravel.Thickness,
+                Opacity = CurrentTravel.Opacity,
+                Locations = new LocationCollection()
+            };
+            CurrentSurface = new MyCartographyObjects.Polygon();
+            CurrentSurface.Tag = new MapPolygon() {
+                Fill = new SolidColorBrush(CurrentSurface.BackgroundColor),
+                Stroke = new SolidColorBrush(CurrentSurface.BorderColor),
+                StrokeThickness = CurrentSurface.Thickness,
+                Opacity = CurrentSurface.Opacity,
+                Locations = new LocationCollection()
+            };
+
             DrawMapdataElements();
 
             UpdateLbCartographyObjectsItemsSource();
         }
+
+        #region Functions
 
         private void DrawMapdataElements()
         {
@@ -65,7 +95,6 @@ namespace Mapping
                     Pushpin newPushpin = new Pushpin {
                         Location = new Location(poi.Latitude, poi.Longitude)
                     };
-                    Pushpins.Add(newPushpin);
                     iCartoObj.Tag = newPushpin;
                     MyMap.Children.Add(newPushpin);
                 }
@@ -76,80 +105,6 @@ namespace Mapping
         {
             LbCartographyObjects.ItemsSource = null;
             LbCartographyObjects.ItemsSource = MapData.CartoObjs;
-        }
-
-        private void MyMap_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            MouseDownPoisition = new Point(e.GetPosition(MyMap).X, e.GetPosition(MyMap).Y);
-        }
-
-        private void MyMap_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            Point mouseUpPosition = new Point(e.GetPosition(MyMap).X, e.GetPosition(MyMap).Y);
-            if (mouseUpPosition == MouseDownPoisition) {
-                switch (EditMode) { // Selection mode
-                    case 1:
-                        bool elementSelected = false;
-                        for (int i = MapData.CartoObjs.Count() - 1; i >= 0; i--) { // Reverse loop because the last element is the first showed on screen
-                            ICartoObj iCartoObj = MapData.CartoObjs[i];
-                            Point clickPoint = e.GetPosition(MyMap);
-                            MyMap.TryViewportPointToLocation(clickPoint, out Location clickLocation);
-                            Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
-                            CartoObj cartoObj = iCartoObj as CartoObj;
-                            if (cartoObj.IsPointClose(clickCoordonnees, 0.0008)) {
-                                elementSelected = true;
-                                LbCartographyObjects.SelectedItem = iCartoObj;
-                                LbCartographyObjects.ScrollIntoView(iCartoObj);
-                            }
-                        }
-                        if (!elementSelected) {
-                            LbCartographyObjects.SelectedItem = null;
-                        }
-                        break;
-                    case 2: // Add mode
-                        Location ClickLocation;
-                        MyMap.TryViewportPointToLocation(e.GetPosition(MyMap), out ClickLocation);
-                        switch (CbActionType.SelectedIndex) {
-                            case 0: // Point of interest
-                                POI newPOI = new POI(ClickLocation.Latitude, ClickLocation.Longitude, "Default");
-                                MapData.Add(newPOI);
-                                Pushpin newPushpin = new Pushpin {
-                                    Location = ClickLocation
-                                };
-                                Pushpins.Add(newPushpin);
-                                MyMap.Children.Add(newPushpin);
-                                newPOI.Tag = newPushpin;
-                                UpdateLbCartographyObjectsItemsSource();
-                                break;
-                            case 1: // Travel
-                                break;
-                            case 2: // Surface
-                                break;
-                        }
-                        break;
-                    case 3: // Delete mode
-                        ICartoObj toRemove = new POI();
-                        for (int i = MapData.CartoObjs.Count() - 1; i >= 0; i--) { // Reverse loop because the last element is the first showed on screen
-                            ICartoObj iCartoObj = MapData.CartoObjs[i];
-                            Point clickPoint = e.GetPosition(MyMap);
-                            MyMap.TryViewportPointToLocation(clickPoint, out Location clickLocation);
-                            Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
-                            CartoObj cartoObj = iCartoObj as CartoObj;
-                            if (cartoObj.IsPointClose(clickCoordonnees, 0.0008)) {
-                                toRemove = iCartoObj;
-                                Pushpin PushpinToRemove = (Pushpin)iCartoObj.Tag;
-                                Pushpins.Remove(PushpinToRemove);
-                                MyMap.Children.Remove(PushpinToRemove);
-                                UpdateLbCartographyObjectsItemsSource();
-                                break;
-                            }
-                        }
-                        MapData.Remove(toRemove);
-                        break;
-                    case 4: // Update mode
-                        break;
-                }
-            }
         }
 
         private void ClickOnToolbarButton(int newEditMode)
@@ -197,6 +152,159 @@ namespace Mapping
             }
         }
 
+        private void ResetCurrentSurface()
+        {
+            IsDrawingSurface = false;
+            CurrentSurface.Coordonnees.Clear();
+            MapPolygon mapPolygon = (MapPolygon)CurrentSurface.Tag;
+            mapPolygon.Locations.Clear();
+            MyMap.Children.Remove(mapPolygon);
+        }
+
+        private void ResetCurrentTravel()
+        {
+            IsDrawingTravel = false;
+            CurrentTravel.Coordonnees.Clear();
+            MapPolyline mapPolyline = (MapPolyline)CurrentTravel.Tag;
+            mapPolyline.Locations.Clear();
+            MyMap.Children.Remove(mapPolyline);
+        }
+
+        private void ResetCurrentItems()
+        {
+            ResetCurrentSurface();
+            ResetCurrentTravel();
+        }
+
+        #endregion
+
+        #region Events
+
+        private void MyMap_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            switch (EditMode) { // Selection mode
+                case 1: // Selection mode
+
+                    break;
+                case 2: // Add mode
+                    switch (CbActionType.SelectedIndex) {
+                        case 1: // Travel
+                        case 2: // Surface
+                            ResetCurrentItems();
+                            break;
+                    }
+                    break;
+                case 3: // Remove mode
+
+                    break;
+                case 4: // Update mode
+
+                    break;
+            }
+        }
+        private void MyMap_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MouseLeftButtonDownPoisition = new Point(e.GetPosition(MyMap).X, e.GetPosition(MyMap).Y);
+        }
+
+        private void MyMap_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            Point mouseLeftButtonUpPosition = new Point(e.GetPosition(MyMap).X, e.GetPosition(MyMap).Y);
+            if (mouseLeftButtonUpPosition == MouseLeftButtonDownPoisition) { // OnClick
+                switch (EditMode) { // Selection mode
+                    case 1:
+                        bool elementSelected = false;
+                        for (int i = MapData.CartoObjs.Count() - 1; i >= 0; i--) { // Reverse loop because the last element is the first showed on screen
+                            ICartoObj iCartoObj = MapData.CartoObjs[i];
+                            Point clickPoint = e.GetPosition(MyMap);
+                            MyMap.TryViewportPointToLocation(clickPoint, out Location clickLocation);
+                            Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
+                            CartoObj cartoObj = iCartoObj as CartoObj;
+                            if (cartoObj.IsPointClose(clickCoordonnees, 0.0008)) {
+                                elementSelected = true;
+                                LbCartographyObjects.SelectedItem = iCartoObj;
+                                LbCartographyObjects.ScrollIntoView(iCartoObj);
+                            }
+                        }
+                        if (!elementSelected) {
+                            LbCartographyObjects.SelectedItem = null;
+                        }
+                        break;
+                    case 2: // Add mode
+                        Location ClickLocation;
+                        MyMap.TryViewportPointToLocation(e.GetPosition(MyMap), out ClickLocation);
+                        switch (CbActionType.SelectedIndex) {
+                            case 0: // Point of interest
+                                Pushpin newPushpin = new Pushpin {
+                                    Location = ClickLocation
+                                };
+                                POI newPOI = new POI(ClickLocation.Latitude, ClickLocation.Longitude);
+                                newPOI.Tag = newPushpin;
+                                MapData.Add(newPOI);
+                                MyMap.Children.Add(newPushpin);
+                                UpdateLbCartographyObjectsItemsSource();
+                                break;
+                            case 1: // Travel
+                                MapPolyline mapPolyline = (MapPolyline)CurrentTravel.Tag;
+                                if (!IsDrawingTravel) {
+                                    ResetCurrentSurface();
+                                    IsDrawingTravel = true;
+                                    MyMap.Children.Add(mapPolyline);
+                                }
+                                Coordonnees newCoordonnee = new Coordonnees(ClickLocation.Latitude, ClickLocation.Longitude);
+                                CurrentTravel.Coordonnees.Add(newCoordonnee);
+                                mapPolyline.Locations.Add(ClickLocation);
+                                break;
+                            case 2: // Surface
+                                MapPolygon mapPolygon = (MapPolygon)CurrentSurface.Tag;
+                                if (!IsDrawingSurface) {
+                                    ResetCurrentTravel();
+                                    IsDrawingSurface = true;
+                                    MyMap.Children.Add(mapPolygon);
+                                }
+                                newCoordonnee = new Coordonnees(ClickLocation.Latitude, ClickLocation.Longitude);
+                                CurrentTravel.Coordonnees.Add(newCoordonnee);
+                                mapPolygon.Locations.Add(ClickLocation);
+                                break;
+                        }
+                        break;
+                    case 3: // Remove mode
+                        bool somethingToRemove = false;
+                        ICartoObj toRemove = new POI(); // Default value 
+                        for (int i = MapData.CartoObjs.Count() - 1; i >= 0; i--) { // Reverse loop because the last element is the first showed on screen
+                            ICartoObj iCartoObj = MapData.CartoObjs[i];
+                            Point clickPoint = e.GetPosition(MyMap);
+                            MyMap.TryViewportPointToLocation(clickPoint, out Location clickLocation);
+                            Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
+                            CartoObj cartoObj = iCartoObj as CartoObj;
+                            if (cartoObj.IsPointClose(clickCoordonnees, 0.0008)) {
+                                somethingToRemove = true;
+                                toRemove = iCartoObj;
+                                if (iCartoObj is POI poi) {
+                                    Pushpin pushpinToRemove = (Pushpin)poi.Tag;
+                                    MyMap.Children.Remove(pushpinToRemove);
+                                } else if (iCartoObj is MyCartographyObjects.Polyline polyline) {
+                                    MapPolyline mapPolylineToRemove = (MapPolyline)polyline.Tag;
+                                    MyMap.Children.Remove(mapPolylineToRemove);
+                                } else if (iCartoObj is MyCartographyObjects.Polygon polygon) {
+                                    MapPolygon mapPolygonToRemove = (MapPolygon)polygon.Tag;
+                                    MyMap.Children.Remove(mapPolygonToRemove);
+                                }
+                                UpdateLbCartographyObjectsItemsSource();
+                                break;
+                            }
+                        }
+                        if (somethingToRemove)
+                            MapData.Remove(toRemove);
+                        break;
+                    case 4: // Update mode
+                        break;
+                }
+            } else { // OnDrag
+                // Nothing
+            }
+        }
+
         private void BtnSelect_Click(object sender, RoutedEventArgs e)
         {
             ClickOnToolbarButton(1);
@@ -228,6 +336,44 @@ namespace Mapping
             }
             */
         }
+
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter && Keyboard.IsKeyDown(Key.LeftCtrl)) { // CTRL + Enter
+                if (IsDrawingTravel) {
+                    MapData.Add(new MyCartographyObjects.Polyline(CurrentTravel));
+                    MapPolyline currentTravelMapPolyline = (MapPolyline)CurrentTravel.Tag;
+                    MapPolyline newMapPolyline = new MapPolyline() {
+                        Stroke = currentTravelMapPolyline.Stroke,
+                        StrokeThickness = currentTravelMapPolyline.StrokeThickness,
+                        Opacity = currentTravelMapPolyline.Opacity,
+                        Locations = new LocationCollection()
+                    };
+                    foreach (Location location in currentTravelMapPolyline.Locations) {
+                        newMapPolyline.Locations.Add(location);
+                    }
+                    MyMap.Children.Add(newMapPolyline);
+                    ResetCurrentTravel();
+                } else if (IsDrawingSurface) {
+                    MapData.Add(new MyCartographyObjects.Polygon(CurrentSurface));
+                    MapPolygon currentTravelMapPolygon = (MapPolygon)CurrentSurface.Tag;
+                    MapPolygon newMapPolygon = new MapPolygon() {
+                        Fill = currentTravelMapPolygon.Fill,
+                        Stroke = currentTravelMapPolygon.Stroke,
+                        StrokeThickness = currentTravelMapPolygon.StrokeThickness,
+                        Opacity = currentTravelMapPolygon.Opacity,
+                        Locations = new LocationCollection()
+                    };
+                    foreach (Location location in currentTravelMapPolygon.Locations) {
+                        newMapPolygon.Locations.Add(location);
+                    }
+                    MyMap.Children.Add(newMapPolygon);
+                    ResetCurrentSurface();
+                }
+            }
+        }
+
+        #endregion
 
     }
 }

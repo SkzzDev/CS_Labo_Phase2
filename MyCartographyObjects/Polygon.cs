@@ -14,10 +14,12 @@ namespace MyCartographyObjects
 
         #region MemberVars
 
-        private List<Coordonnees> _coordonnees;
+        private List<Coordonnees> _coordonnees = new List<Coordonnees>();
         private Color _backgroundColor;
         private Color _borderColor;
-        private double _oppacity = 1;
+        private int _thickness;
+        private double _oppacity;
+        private string _description;
         private object _tag;
 
         #endregion
@@ -42,10 +44,28 @@ namespace MyCartographyObjects
             set { _borderColor = value; }
         }
 
-        public double Oppacity
+        public int Thickness
+        {
+            get { return _thickness; }
+            set { _thickness = value; }
+        }
+
+        public double Opacity
         {
             get { return _oppacity; }
             set { _oppacity = value; }
+        }
+
+        public string Description
+        {
+            get { return _description; }
+            set { _description = value; }
+        }
+
+        public object Tag
+        {
+            get { return _tag; }
+            set { _tag = value; }
         }
 
         public int NbPoints {
@@ -65,31 +85,34 @@ namespace MyCartographyObjects
             }
         }
 
-        public object Tag
-        {
-            get { return _tag; }
-            set { _tag = value; }
-        }
-
         #endregion
 
         #region Constructors
 
-        public Polygon(List<Coordonnees> coordCollection, Color backgroundColor, Color borderColor, double oppacity = 1) : base() // Main initialisation constructor
+        public Polygon(Color backgroundColor, Color borderColor, double oppacity = 0.8, int thickness = 3, string description = "") : base() // Main initialisation constructor
         {
-            Coordonnees = coordCollection;
             BackgroundColor = backgroundColor;
             BorderColor = borderColor;
-            Oppacity = oppacity;
+            Opacity = oppacity;
+            Thickness = thickness;
+            Description = description;
         }
 
-        public Polygon(List<Coordonnees> coordCollection) : this(coordCollection, Colors.LightBlue, Colors.Blue) { } // Other initialisation constructor
+        public Polygon(Polygon polygon) : this(polygon.BackgroundColor, polygon.BorderColor, polygon.Opacity, polygon.Thickness, polygon.Description) // Copy constructor - From a Polyline
+        {
+            foreach (Coordonnees coordonnee in polygon.Coordonnees) {
+                Coordonnees.Add(new Coordonnees(coordonnee));
+            }
+        }
 
-        public Polygon(Polygon polygon) : this(polygon.Coordonnees, polygon.BackgroundColor, polygon.BorderColor, polygon.Oppacity) { } // Copy constructor - From a Polyline
+        public Polygon(Polyline polyline) : this(Colors.Red, polyline.LineColor, polyline.Opacity, polyline.Thickness, polyline.Description) // Copy constructor - From a Polyline
+        {
+            foreach (Coordonnees coordonnee in polyline.Coordonnees) {
+                Coordonnees.Add(new Coordonnees(coordonnee));
+            }
+        }
 
-        public Polygon(Polyline polyline) : this(polyline.Coordonnees) { } // Copy constructor - From a Polyline
-
-        public Polygon() : this(new List<Coordonnees>(), Colors.LightBlue, Colors.Blue) { } // Default constructor
+        public Polygon() : this(Colors.Red, Colors.DarkRed) { } // Default constructor
 
         #endregion
 
@@ -97,7 +120,7 @@ namespace MyCartographyObjects
 
         public override string ToString()
         {
-            String toReturn = base.ToString() + "\n[#] Couleur de fond: " + BackgroundColor + "\n[#] Couleur des bordures: " + BorderColor + "\n[#] Oppacite: " + Oppacity + "\n[#] Coordonnees:\n";
+            String toReturn = base.ToString() + "\n[#] Couleur de fond: " + BackgroundColor + "\n[#] Couleur des bordures: " + BorderColor + "\n[#] Oppacite: " + Opacity + "\n[#] Coordonnees:\n";
             foreach (Coordonnees coordonnees in Coordonnees) {
                 toReturn += "\t" + coordonnees.ToString() + "\n";
             }
@@ -107,6 +130,11 @@ namespace MyCartographyObjects
         public override void Draw()
         {
             base.Draw();
+        }
+
+        public void Add(Coordonnees coordonneeToAdd)
+        {
+            Coordonnees.Add(coordonneeToAdd);
         }
 
         private bool IsValid()
@@ -121,29 +149,6 @@ namespace MyCartographyObjects
             }
             return false;
         }
-
-        /*
-        public bool IsPointClose_BoundingBox(Coordonnees toCheck, double precision)
-        {
-            if (IsValid()) {
-                double max_X = Coordonnees[0].Latitude, max_Y = Coordonnees[0].Longitude, min_X = Coordonnees[0].Latitude, min_Y = Coordonnees[0].Longitude;
-
-                for (int i = 1; i < NbPoints; i++) {
-                    if (Coordonnees[i].Latitude > max_X) max_X = Coordonnees[i].Latitude;
-                    else if (Coordonnees[i].Latitude < min_X) min_X = Coordonnees[i].Latitude;
-                    if (Coordonnees[i].Longitude > max_Y) max_Y = Coordonnees[i].Longitude;
-                    else if (Coordonnees[i].Longitude < min_Y) min_Y = Coordonnees[i].Longitude;
-                }
-
-                if (toCheck.Latitude > min_X - precision && toCheck.Latitude < max_X + precision) {
-                    if (toCheck.Longitude > min_Y - precision && toCheck.Longitude < max_Y + precision) {
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-        */
 
         public override bool IsPointClose(Coordonnees toCheck, double precision)
         {
@@ -196,7 +201,7 @@ namespace MyCartographyObjects
         public Polygon Extend(double extentionSize)
         {
             if (IsValid()) {
-                List<Coordonnees> newCoordCollection = new List<Coordonnees>();
+                Polygon toReturn = new Polygon(BackgroundColor, BorderColor, Opacity);
                 for (int i = 0; i < NbPoints; i++) {
                     ZZCoordinate previousPoint = (ZZCoordinate)Coordonnees[ZZFunctions.nmod(i - 1, NbPoints)], anglePoint = (ZZCoordinate)Coordonnees[i], nextPoint = (ZZCoordinate)Coordonnees[(i + 1) % NbPoints];
                     double alpha = ZZMath.AngleFrom3Points(previousPoint, anglePoint, nextPoint), beta = (180 - alpha) / 2.0;
@@ -205,9 +210,9 @@ namespace MyCartographyObjects
 
                     double newX = anglePoint.X + distanceToAdd * Math.Cos(ZZMath.ToRadians(slopeAngle));
                     double newY = anglePoint.Y + distanceToAdd * Math.Sin(ZZMath.ToRadians(slopeAngle));
-                    newCoordCollection.Add(new Coordonnees(newX, newY));
+                    toReturn.Add(new Coordonnees(newX, newY));
                 }
-                return new Polygon(newCoordCollection, BackgroundColor, BorderColor, Oppacity);
+                return toReturn;
             }
             return this;
         }

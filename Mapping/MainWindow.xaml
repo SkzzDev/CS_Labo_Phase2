@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         xmlns:local="clr-namespace:Mapping"
         Title="Mapping" Height="700" Width="1200"
-        ResizeMode="NoResize">
+        ResizeMode="NoResize" KeyDown="MainWindow_KeyDown">
     <Grid>
         <DockPanel LastChildFill="False">
             <Menu DockPanel.Dock="Top">
@@ -68,7 +68,7 @@
                     </ListBox>
                 </StackPanel>
                 <GridSplitter Width="5" />
-                <m:Map x:Name="MyMap" CredentialsProvider="Ao1GPsO8BXk9YeDjuGdzrMpZUxqDmPWN5rTG2YcquymwSrdQ6jcLv-Ujbaq8r1sr" Mode="Road" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" MouseLeftButtonUp="MyMap_MouseLeftButtonUp" MouseLeftButtonDown="MyMap_MouseLeftButtonDown" />
+                <m:Map x:Name="MyMap" CredentialsProvider="Ao1GPsO8BXk9YeDjuGdzrMpZUxqDmPWN5rTG2YcquymwSrdQ6jcLv-Ujbaq8r1sr" Mode="Road" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" MouseLeftButtonUp="MyMap_MouseLeftButtonUp" MouseRightButtonDown="MyMap_MouseRightButtonDown" MouseLeftButtonDown="MyMap_MouseLeftButtonDown" />
             </Grid>
         </DockPanel>
     </Grid>

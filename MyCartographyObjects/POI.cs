@@ -34,16 +34,12 @@ namespace MyCartographyObjects
 
         #region Constructors
 
-        public POI(double latitude, double longitude, string description) : base(latitude, longitude)
+        public POI(double latitude = 0, double longitude = 0, string description = "Default") : base(latitude, longitude)
         {
             Description = description;
         }
 
-        public POI(double latitude, double longitude) : base(latitude, longitude) { }
-
-        public POI(string description) : this(50.6088641, 5.5110179, description) { }
-
-        public POI() : this("HEPL Seraing") {}
+        public POI(POI poi) : this(poi.Latitude, poi.Longitude, poi.Description) { }
 
         #endregion
 
