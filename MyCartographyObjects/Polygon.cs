@@ -183,17 +183,17 @@ namespace MyCartographyObjects
                         }
                     } else {
                         double m = dy / dx, p = previousPoint.Y - m * previousPoint.X;
-                        double slopeAngle = ZZMath.SlopeAngle(previousPoint, anglePoint);
+                        double slopeAngle = ZZMath.SlopeAngle(anglePoint, previousPoint);
                         double fx = m * nextPoint.X + p;
                         if (slopeAngle < 90 || slopeAngle > 270) { // The point needs to be below the line
-                            if (nextPoint.Y < m * nextPoint.X + p) sign = -1;
+                            if (nextPoint.Y > fx) sign = -1;
                         } else { // The point needs to be above the line
-                            if (nextPoint.Y > m * nextPoint.X + p) sign = -1;
+                            if (nextPoint.Y < fx) sign = -1;
                         }
                     }
                     sumAngle += sign * alpha;
                 }
-                return (sumAngle > 359); // To be inside, the total of the angles needs to be above 359 (basicly == 360 but double precision doesn't always makes it work)
+                return (sumAngle > 359.9 || sumAngle < 359.9); // To be inside, the total of the angles needs to be above 359.9 or below 359.9, depending on the rotation sense made when creating the polygon (basicly == 360 but double precision doesn't always makes it work)
             }
             return false;
         }
