@@ -247,6 +247,39 @@ namespace MyCartographyObjects
             return csv;
         }
 
+        private Coordonnees GetTopLeft()
+        {
+            Coordonnees topLeft = new Coordonnees();
+            if (NbPoints > 0) {
+                topLeft = new Coordonnees(Coordonnees[0]);
+                for (int i = 1; i < Coordonnees.Count(); i++) {
+                    if (Coordonnees[i].Latitude < topLeft.Latitude) topLeft.Latitude = Coordonnees[i].Latitude;
+                    if (Coordonnees[i].Longitude > topLeft.Longitude) topLeft.Longitude = Coordonnees[i].Longitude;
+                }
+            }
+            return topLeft;
+        }
+
+        private Coordonnees GetBottomRight()
+        {
+            Coordonnees bottomRight = new Coordonnees();
+            if (NbPoints > 0) {
+                bottomRight = new Coordonnees(Coordonnees[0]);
+                for (int i = 1; i < Coordonnees.Count(); i++) {
+                    if (Coordonnees[i].Latitude > bottomRight.Latitude) bottomRight.Latitude = Coordonnees[i].Latitude;
+                    if (Coordonnees[i].Longitude < bottomRight.Longitude) bottomRight.Longitude = Coordonnees[i].Longitude;
+                }
+            }
+            return bottomRight;
+        }
+
+        public Coordonnees GetCenter()
+        {
+            Coordonnees topLeft = GetTopLeft(), bottomRight = GetBottomRight();
+            ZZCoordinate centerOfSegment = ZZMath.GetCenterOfSegment((ZZCoordinate)topLeft, (ZZCoordinate)bottomRight);
+            return new Coordonnees(centerOfSegment.Y, centerOfSegment.X);
+        }
+
         #endregion
 
     }

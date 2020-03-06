@@ -81,6 +81,11 @@ namespace ZZUtils
             return (degres) ? slopeAngle : ToRadians(slopeAngle);
         }
 
+        public static ZZCoordinate GetCenterOfSegment(ZZCoordinate pt1, ZZCoordinate pt2)
+        {
+            return new ZZCoordinate((pt1.X + pt2.X) / 2.0, (pt1.Y + pt2.Y) / 2.0);
+        }
+
         public static double ToRadians(double degreeAngle)
         {
             return degreeAngle * (Math.PI / 180);

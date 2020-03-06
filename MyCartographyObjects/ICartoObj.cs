@@ -13,5 +13,7 @@ namespace MyCartographyObjects
 
         string ToCSV();
 
+        Coordonnees GetCenter();
+
     }
 }

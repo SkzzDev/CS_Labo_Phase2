@@ -9,7 +9,16 @@
 
     Import() dans MyPersonnalMapData(): Lors qu'on importe un POI, comment utiliser AddPushpin() de MainWindow?
 
+    LbCartographyObjects_SelectionChanged(), les MapPolyline et MapPolygon ne changent pas de couleur?
+
 
 ### To do list:
 
 	Lors qu'on ajoute un POI, si on clique quelque part, qu'on bouge la souris en drag, et qu'on revient pile au même pixel, le POI ne doit pas s'ajouter (c'est le cas pour l'instant)
+
+	Importation d'un trajet
+
+	Exportation trajet/POI
+
+
+

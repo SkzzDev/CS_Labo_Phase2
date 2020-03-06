@@ -139,20 +139,40 @@ namespace MyCartographyObjects
             return false;
         }
 
+        private Coordonnees GetTopLeft()
+        {
+            Coordonnees topLeft = new Coordonnees();
+            if (NbPoints > 0) {
+                topLeft = new Coordonnees(Coordonnees[0]);
+                for (int i = 1; i < Coordonnees.Count(); i++) {
+                    if (Coordonnees[i].Latitude < topLeft.Latitude) topLeft.Latitude = Coordonnees[i].Latitude;
+                    if (Coordonnees[i].Longitude > topLeft.Longitude) topLeft.Longitude = Coordonnees[i].Longitude;
+                }
+            }
+            return topLeft;
+        }
+
+        private Coordonnees GetBottomRight()
+        {
+            Coordonnees bottomRight = new Coordonnees();
+            if (NbPoints > 0) {
+                bottomRight = new Coordonnees(Coordonnees[0]);
+                for (int i = 1; i < Coordonnees.Count(); i++) {
+                    if (Coordonnees[i].Latitude > bottomRight.Latitude) bottomRight.Latitude = Coordonnees[i].Latitude;
+                    if (Coordonnees[i].Longitude < bottomRight.Longitude) bottomRight.Longitude = Coordonnees[i].Longitude;
+                }
+            }
+            return bottomRight;
+        }
+
         public double GetBoundingBoxArea()
         {
-            List<Coordonnees> coords = Coordonnees;
+            if (NbPoints > 0) {
+                Coordonnees topLeft = GetTopLeft(), bottomRight = GetBottomRight();
 
-            Coordonnees topLeft = new Coordonnees(coords[0]), bottomRight = new Coordonnees(coords[0]);
-
-            for (int i = 1; i < Coordonnees.Count(); i++) {
-                if (coords[i].Latitude > bottomRight.Latitude) bottomRight.Latitude = coords[i].Latitude;
-                else if (coords[i].Latitude < topLeft.Latitude) topLeft.Latitude = coords[i].Latitude;
-                if (coords[i].Longitude > topLeft.Longitude) topLeft.Longitude = coords[i].Longitude;
-                else if (coords[i].Longitude < bottomRight.Longitude) bottomRight.Longitude = coords[i].Longitude;
+                return (bottomRight.Latitude - topLeft.Latitude) * (topLeft.Longitude - bottomRight.Longitude);
             }
-
-            return (bottomRight.Latitude - topLeft.Latitude) * (topLeft.Longitude - bottomRight.Longitude);
+            return 0;
         }
 
         public double GetPerimeter()
@@ -189,6 +209,13 @@ namespace MyCartographyObjects
             }
             csv = csv.Substring(0, -1);
             return csv;
+        }
+
+        public Coordonnees GetCenter()
+        {
+            Coordonnees topLeft = GetTopLeft(), bottomRight = GetBottomRight();
+            ZZCoordinate centerOfSegment = ZZMath.GetCenterOfSegment((ZZCoordinate)topLeft, (ZZCoordinate)bottomRight);
+            return new Coordonnees(centerOfSegment.Y, centerOfSegment.X);
         }
 
         #endregion

@@ -66,6 +66,8 @@ namespace Mapping
 
             MapData = new MyPersonnalMapData(MyMap, "Florent", "Banneux");
 
+            DrawMapDataElements(); // Draw defaults elements, maybe useless later
+
             CurrentTravel = new MyCartographyObjects.Polyline();
             CurrentTravel.Tag = new MapPolyline() {
                 Stroke = new SolidColorBrush(CurrentTravel.LineColor),
@@ -82,19 +84,18 @@ namespace Mapping
                 Locations = new LocationCollection()
             };
 
-            DrawMapdataElements();
-
             UpdateLbCartographyObjectsItemsSource();
         }
 
         #region Functions
 
-        private void DrawMapdataElements()
+        private void DrawMapDataElements() // Draw defaults elements, maybe useless later
         {
             foreach (ICartoObj iCartoObj in MapData.CartoObjs) {
                 if (iCartoObj is POI poi) {
                     Pushpin newPushpin = new Pushpin {
-                        Location = new Location(poi.Latitude, poi.Longitude)
+                        Location = new Location(poi.Latitude, poi.Longitude),
+                        Background = Brushes.Red
                     };
                     iCartoObj.Tag = newPushpin;
                     MyMap.Children.Add(newPushpin);
@@ -177,6 +178,18 @@ namespace Mapping
             ResetCurrentTravel();
         }
 
+        private void AddPushpin(Location locationToAdd)
+        {
+            Pushpin newPushpin = new Pushpin {
+                Location = locationToAdd,
+                Background = Brushes.Red
+            };
+            POI newPOI = new POI(locationToAdd.Latitude, locationToAdd.Longitude);
+            newPOI.Tag = newPushpin;
+            MapData.Add(newPOI);
+            MyMap.Children.Add(newPushpin);
+        }
+
         private void AddPointToSurface(Location clickLocation)
         {
             MapPolygon mapPolygon = (MapPolygon)(CurrentSurface.Tag);
@@ -247,17 +260,6 @@ namespace Mapping
                     }
                 }
             }
-        }
-
-        private void AddPushpin(Location locationToAdd)
-        {
-            Pushpin newPushpin = new Pushpin {
-                Location = locationToAdd
-            };
-            POI newPOI = new POI(locationToAdd.Latitude, locationToAdd.Longitude);
-            newPOI.Tag = newPushpin;
-            MapData.Add(newPOI);
-            MyMap.Children.Add(newPushpin);
         }
 
         #endregion
@@ -392,12 +394,40 @@ namespace Mapping
         {
             /* 
              * Made to center the POI selected on the map, but bug due to mouse movements etc
-             * 
-            if (LbCartographyObjects.SelectedItem is POI poi) {
+             */
+            foreach (ICartoObj iCartoObj in MapData.CartoObjs) {
+                if (iCartoObj is POI poi) {
+                    Pushpin pushpin = (Pushpin)(poi.Tag);
+                    pushpin.Background = new SolidColorBrush(poi.BackgroundColor);
+                } else if (iCartoObj is MyCartographyObjects.Polyline polyline) {
+                    MapPolyline mapPolyline = (MapPolyline)(polyline.Tag);
+                    mapPolyline.Stroke = new SolidColorBrush(polyline.LineColor);
+                } else if (iCartoObj is MyCartographyObjects.Polygon polygon) {
+                    MapPolygon mapPolygon = (MapPolygon)(polygon.Tag);
+                    mapPolygon.Stroke = new SolidColorBrush(polygon.BorderColor);
+                    mapPolygon.Fill = new SolidColorBrush(polygon.BackgroundColor);
+                }
+            }
+            if (LbCartographyObjects.SelectedItem is POI) {
+                POI poi = (POI)(LbCartographyObjects.SelectedItem);
+                Pushpin pushpin = (Pushpin)(poi.Tag);
+                pushpin.Background = Brushes.DodgerBlue;
                 Location location = new Location(poi.Latitude, poi.Longitude);
                 MyMap.SetView(location, MyMap.ZoomLevel);
+            } else if (LbCartographyObjects.SelectedItem is MyCartographyObjects.Polyline polylineSelected) {
+                MapPolyline mapPolyline = (MapPolyline)(polylineSelected.Tag);
+                mapPolyline.Stroke = new SolidColorBrush(polylineSelected.LineColor);
+                Coordonnees centerPolyline = polylineSelected.GetCenter();
+                Location location = new Location(centerPolyline.Latitude, centerPolyline.Longitude);
+                MyMap.SetView(location, MyMap.ZoomLevel);
+            } else if (LbCartographyObjects.SelectedItem is MyCartographyObjects.Polygon polygonSelected) {
+                MapPolygon mapPolygon = (MapPolygon)(polygonSelected.Tag);
+                mapPolygon.Stroke = new SolidColorBrush(polygonSelected.BorderColor);
+                mapPolygon.Fill = new SolidColorBrush(polygonSelected.BackgroundColor);
+                Coordonnees centerPolygon = polygonSelected.GetCenter();
+                Location location = new Location(centerPolygon.Latitude, centerPolygon.Longitude);
+                MyMap.SetView(location, MyMap.ZoomLevel);
             }
-            */
         }
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace MyCartographyObjects
 {
@@ -12,6 +13,7 @@ namespace MyCartographyObjects
         #region MemberVars
 
         private string _description;
+        private Color _backgroundColor;
         private object _tag;
 
         #endregion
@@ -24,6 +26,12 @@ namespace MyCartographyObjects
             set { _description = value; }
         }
 
+        public Color BackgroundColor
+        {
+            get { return _backgroundColor; }
+            set { _backgroundColor = value; }
+        }
+
         public object Tag
         {
             get { return _tag; }
@@ -34,17 +42,20 @@ namespace MyCartographyObjects
 
         #region Constructors
 
-        public POI(double latitude = 0, double longitude = 0, string description = "Default") : base(latitude, longitude)
+        public POI(double latitude, double longitude, string description, Color backgroundColor) : base(latitude, longitude)
         {
             Description = description;
+            BackgroundColor = backgroundColor;
         }
+
+        public POI(double latitude = 0, double longitude = 0, string description = "Default") : this(latitude, longitude, description, Colors.Red) { }
 
         public POI(string csv)
         {
             ImportCSV(csv);
         }
 
-        public POI(POI poi) : this(poi.Latitude, poi.Longitude, poi.Description) { }
+        public POI(POI poi) : this(poi.Latitude, poi.Longitude, poi.Description, poi.BackgroundColor) { }
 
         #endregion
 
@@ -77,6 +88,11 @@ namespace MyCartographyObjects
                 return true;
             }
             return false;
+        }
+
+        public Coordonnees GetCenter()
+        {
+            return new Coordonnees(Latitude, Longitude);
         }
 
         #endregion

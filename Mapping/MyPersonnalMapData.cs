@@ -7,6 +7,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Microsoft.Maps.MapControl.WPF;
 using Microsoft.Win32;
 using MyCartographyObjects;
@@ -205,12 +206,13 @@ namespace Mapping
                 POI newPOI = new POI(csvData);
                 Location pushpinLocation = new Location(newPOI.Latitude, newPOI.Longitude);
                 Pushpin newPushpin = new Pushpin {
-                    Location = pushpinLocation
+                    Location = pushpinLocation,
+                    Background = new SolidColorBrush(newPOI.BackgroundColor)
                 };
                 newPOI.Tag = newPushpin;
                 Add(newPOI);
                 MyMap.Children.Add(newPushpin);
-            } else { // Polyline, Polygon (Travel, Surface)
+            } else { // Polyline (Travel)
 
             }
 
