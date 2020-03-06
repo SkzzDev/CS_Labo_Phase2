@@ -39,6 +39,11 @@ namespace MyCartographyObjects
             Description = description;
         }
 
+        public POI(string csv)
+        {
+            ImportCSV(csv);
+        }
+
         public POI(POI poi) : this(poi.Latitude, poi.Longitude, poi.Description) { }
 
         #endregion
@@ -48,6 +53,30 @@ namespace MyCartographyObjects
         public override string ToString()
         {
             return base.ToString() + " « " + Description + " »";
+        }
+
+        public override string ToCSV()
+        {
+            return base.ToCSV() + ";" + Description;
+        }
+
+        public bool ImportCSV(string csv)
+        {
+            int commaCount = csv.Count(f => f == ';');
+            if (commaCount >= 2) {
+                int commaPos = csv.IndexOf(';');
+                Latitude = Convert.ToDouble(csv.Substring(0, commaPos));
+                csv = csv.Substring(commaPos + 1);
+                commaPos = csv.IndexOf(';');
+                if (commaPos == -1) {
+                    Longitude = Convert.ToDouble(csv);
+                } else {
+                    Longitude = Convert.ToDouble(csv.Substring(0, commaPos));
+                    Description = csv.Substring(commaPos + 1).TrimEnd('\r', '\n'); ;
+                }
+                return true;
+            }
+            return false;
         }
 
         #endregion

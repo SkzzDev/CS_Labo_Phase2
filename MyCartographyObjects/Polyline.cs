@@ -176,6 +176,21 @@ namespace MyCartographyObjects
             return CompareTo(other) == 0;
         }
 
+        public override string ToCSV()
+        {
+            string csv = "";
+            foreach (Coordonnees currentCoord in Coordonnees) {
+                if (currentCoord is POI poi) {
+                    csv += poi.ToCSV();
+                } else {
+                    csv += currentCoord.ToCSV();
+                }
+                csv += "\r\n";
+            }
+            csv = csv.Substring(0, -1);
+            return csv;
+        }
+
         #endregion
 
     }

@@ -55,6 +55,8 @@ namespace MyCartographyObjects
 
         public abstract bool IsPointClose(Coordonnees clickCoord, double precision);
 
+        public abstract string ToCSV();
+
         public int GetCoordonneesNb()
         {
             if (this is Coordonnees) {

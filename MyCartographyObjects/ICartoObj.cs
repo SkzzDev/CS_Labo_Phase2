@@ -11,5 +11,7 @@ namespace MyCartographyObjects
 
         object Tag { get; set; }
 
+        string ToCSV();
+
     }
 }

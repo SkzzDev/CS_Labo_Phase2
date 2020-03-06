@@ -15,7 +15,7 @@
                     <MenuItem Header="_Open" />
                     <MenuItem Header="_Save" />
                     <MenuItem Header="_POI">
-                        <MenuItem Header="_Import" />
+                        <MenuItem Header="_Import" Click="MenuItem_File_POI_Import_Click" />
                         <MenuItem Header="_Export" />
                     </MenuItem>
                     <MenuItem Header="_Travel">

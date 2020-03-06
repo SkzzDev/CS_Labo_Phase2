@@ -69,6 +69,11 @@ namespace MyCartographyObjects
             return zzCoord;
         }
 
+        public override string ToCSV()
+        {
+            return Latitude + ";" + Longitude;
+        }
+
         #endregion
 
     }

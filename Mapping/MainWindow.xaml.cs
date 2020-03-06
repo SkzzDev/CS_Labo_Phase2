@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Maps.MapControl.WPF;
-
 using MyCartographyObjects;
 
 namespace Mapping
@@ -64,7 +64,7 @@ namespace Mapping
         {
             InitializeComponent();
 
-            MapData = new MyPersonnalMapData("Florent", "Banneux");
+            MapData = new MyPersonnalMapData(MyMap, "Florent", "Banneux");
 
             CurrentTravel = new MyCartographyObjects.Polyline();
             CurrentTravel.Tag = new MapPolyline() {
@@ -177,13 +177,96 @@ namespace Mapping
             ResetCurrentTravel();
         }
 
+        private void AddPointToSurface(Location clickLocation)
+        {
+            MapPolygon mapPolygon = (MapPolygon)(CurrentSurface.Tag);
+            if (!IsDrawingSurface) {
+                ResetCurrentTravel();
+                IsDrawingSurface = true;
+                MyMap.Children.Add(mapPolygon);
+            }
+            bool searchCoordsNearClick = true;
+            if (Keyboard.IsKeyDown(Key.LeftCtrl)) {
+                searchCoordsNearClick = false;
+            }
+            Coordonnees newCoordonnee = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
+            Location newLocation = new Location(clickLocation);
+            if (searchCoordsNearClick) {
+                GetCoordonneesAndLocationNearClick(clickLocation, ref newCoordonnee, ref newLocation);
+            }
+            CurrentSurface.Coordonnees.Add(newCoordonnee);
+            mapPolygon.Locations.Add(newLocation);
+        }
+
+        private void AddPointToTravel(Location clickLocation)
+        {
+            MapPolyline mapPolyline = (MapPolyline)(CurrentTravel.Tag);
+            if (!IsDrawingTravel) {
+                ResetCurrentSurface();
+                IsDrawingTravel = true;
+                MyMap.Children.Add(mapPolyline);
+            }
+            bool searchCoordsNearClick = true;
+            if (Keyboard.IsKeyDown(Key.LeftCtrl)) {
+                searchCoordsNearClick = false;
+            }
+            Coordonnees newCoordonnee = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
+            Location newLocation = new Location(clickLocation);
+            if (searchCoordsNearClick) {
+                GetCoordonneesAndLocationNearClick(clickLocation, ref newCoordonnee, ref newLocation);
+            }
+            CurrentTravel.Coordonnees.Add(newCoordonnee);
+            mapPolyline.Locations.Add(newLocation);
+        }
+
+        private void GetCoordonneesAndLocationNearClick(Location clickLocation, ref Coordonnees newCoordonnee, ref Location newLocation)
+        {
+            bool stop = false;
+            Coordonnees clickCoordonnees = new Coordonnees(clickLocation.Latitude, clickLocation.Longitude);
+            for (int i = MapData.CartoObjs.Count() - 1; i >= 0 && !stop; i--) { // Reverse loop because the last element is the first showed on screen
+                ICartoObj iCartoObj = MapData.CartoObjs[i];
+                if (iCartoObj is POI poi) { // POI (Pushpin)
+                    if (poi.IsPointClose(clickCoordonnees, _PRECISION)) {
+                        newCoordonnee.Latitude = poi.Latitude;
+                        newCoordonnee.Longitude = poi.Longitude;
+                        newLocation.Latitude = poi.Latitude;
+                        newLocation.Longitude = poi.Longitude;
+                        stop = true;
+                    }
+                } else { // Polyline or Polygon (Coords of the element)
+                    IPointy iPointy = iCartoObj as IPointy;
+                    for (int j = iPointy.Coordonnees.Count() - 1; j >= 0 && !stop; j--) { // Reverse loop because the last element is the first showed on screen
+                        Coordonnees currentCoord = iPointy.Coordonnees[j];
+                        if (currentCoord.IsPointClose(clickCoordonnees, _PRECISION)) {
+                            newCoordonnee.Latitude = currentCoord.Latitude;
+                            newCoordonnee.Longitude = currentCoord.Longitude;
+                            newLocation.Latitude = currentCoord.Latitude;
+                            newLocation.Longitude = currentCoord.Longitude;
+                            stop = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        private void AddPushpin(Location locationToAdd)
+        {
+            Pushpin newPushpin = new Pushpin {
+                Location = locationToAdd
+            };
+            POI newPOI = new POI(locationToAdd.Latitude, locationToAdd.Longitude);
+            newPOI.Tag = newPushpin;
+            MapData.Add(newPOI);
+            MyMap.Children.Add(newPushpin);
+        }
+
         #endregion
 
         #region Events
 
         private void MyMap_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            switch (EditMode) { // Selection mode
+            switch (EditMode) {
                 case 1: // Selection mode
 
                     break;
@@ -225,6 +308,7 @@ namespace Mapping
                                 elementSelected = true;
                                 LbCartographyObjects.SelectedItem = iCartoObj;
                                 LbCartographyObjects.ScrollIntoView(iCartoObj);
+                                break;
                             }
                         }
                         if (!elementSelected) {
@@ -236,38 +320,16 @@ namespace Mapping
                         MyMap.TryViewportPointToLocation(e.GetPosition(MyMap), out ClickLocation);
                         switch (CbActionType.SelectedIndex) {
                             case 0: // Point of interest
-                                Pushpin newPushpin = new Pushpin {
-                                    Location = ClickLocation
-                                };
-                                POI newPOI = new POI(ClickLocation.Latitude, ClickLocation.Longitude);
-                                newPOI.Tag = newPushpin;
-                                MapData.Add(newPOI);
-                                MyMap.Children.Add(newPushpin);
-                                UpdateLbCartographyObjectsItemsSource();
+                                AddPushpin(ClickLocation);
                                 break;
                             case 1: // Travel
-                                MapPolyline mapPolyline = (MapPolyline)(CurrentTravel.Tag);
-                                if (!IsDrawingTravel) {
-                                    ResetCurrentSurface();
-                                    IsDrawingTravel = true;
-                                    MyMap.Children.Add(mapPolyline);
-                                }
-                                Coordonnees newCoordonnee = new Coordonnees(ClickLocation.Latitude, ClickLocation.Longitude);
-                                CurrentTravel.Coordonnees.Add(newCoordonnee);
-                                mapPolyline.Locations.Add(ClickLocation);
+                                AddPointToTravel(ClickLocation);
                                 break;
                             case 2: // Surface
-                                MapPolygon mapPolygon = (MapPolygon)(CurrentSurface.Tag);
-                                if (!IsDrawingSurface) {
-                                    ResetCurrentTravel();
-                                    IsDrawingSurface = true;
-                                    MyMap.Children.Add(mapPolygon);
-                                }
-                                newCoordonnee = new Coordonnees(ClickLocation.Latitude, ClickLocation.Longitude);
-                                CurrentSurface.Coordonnees.Add(newCoordonnee);
-                                mapPolygon.Locations.Add(ClickLocation);
+                                AddPointToSurface(ClickLocation);
                                 break;
                         }
+                        UpdateLbCartographyObjectsItemsSource();
                         break;
                     case 3: // Remove mode
                         bool somethingToRemove = false;
@@ -376,6 +438,10 @@ namespace Mapping
                     ResetCurrentSurface();
                 }
             }
+        }
+        private void MenuItem_File_POI_Import_Click(object sender, RoutedEventArgs e)
+        {
+            MapData.Import();
         }
 
         #endregion

@@ -193,7 +193,7 @@ namespace MyCartographyObjects
                     }
                     sumAngle += sign * alpha;
                 }
-                return (sumAngle > 359.9 || sumAngle < 359.9); // To be inside, the total of the angles needs to be above 359.9 or below 359.9, depending on the rotation sense made when creating the polygon (basicly == 360 but double precision doesn't always makes it work)
+                return ((sumAngle > 359.9 && sumAngle < 360.1) || (sumAngle < -359.9 && sumAngle > -360.1)); // To be inside, the total of the angles needs to be above 359.9 or below 359.9, depending on the rotation sense made when creating the polygon (basicly == 360 but double precision doesn't always makes it work)
             }
             return false;
         }
@@ -230,6 +230,21 @@ namespace MyCartographyObjects
         public int CompareTo(IPointy pointy)
         {
             return GetPerimeter().CompareTo(pointy.GetPerimeter());
+        }
+
+        public override string ToCSV()
+        {
+            string csv = "";
+            foreach (Coordonnees currentCoord in Coordonnees) {
+                if (currentCoord is POI poi) {
+                    csv += poi.ToCSV();
+                } else {
+                    csv += currentCoord.ToCSV();
+                }
+                csv += "\r\n";
+            }
+            csv = csv.Substring(0, -1);
+            return csv;
         }
 
         #endregion

@@ -12,6 +12,10 @@ namespace MyCartographyObjects
         int NbPoints {
             get;
         }
+        List<Coordonnees> Coordonnees
+        {
+            get; set;
+        }
 
         double GetPerimeter();
 
