@@ -191,29 +191,35 @@ namespace Mapping
             CartoObjs.Clear();
 
             // Convert all bytes into one string
-            string csvData = "";
+            string csv = "";
             for (int i = 0; i < bytes.Length; i++) {
-                csvData += Convert.ToChar(bytes[i]);
+                csv += Convert.ToChar(bytes[i]);
             }
-            LastCSVSaved = csvData;
+            LastCSVSaved = csv;
 
-            int lines = csvData.Count(f => f == '\n');
+            int lines = csv.Count(f => f == '\n');
 
             // Load new elements from the string into the object list and on the map
-            if (lines == 0 || (lines == 1 && csvData[csvData.Length - 1] == 10 && csvData[csvData.Length - 2] == 13)) { // POI (Pushpin)
+            if (lines == 0 || (lines == 1 && csv[csv.Length - 1] == 10 && csv[csv.Length - 2] == 13)) { // POI (Pushpin)
                 if (lines == 1)
-                    csvData = csvData.Remove(csvData.Length - 2);
-                POI newPOI = new POI(csvData);
+                    csv = csv.Remove(csv.Length - 2);
+                POI newPOI = new POI(csv);
                 Location pushpinLocation = new Location(newPOI.Latitude, newPOI.Longitude);
                 Pushpin newPushpin = new Pushpin {
                     Location = pushpinLocation,
-                    Background = new SolidColorBrush(newPOI.BackgroundColor)
+                    Background = new SolidColorBrush(newPOI.BackgroundColor),
                 };
                 newPOI.Tag = newPushpin;
                 Add(newPOI);
                 MyMap.Children.Add(newPushpin);
             } else { // Polyline (Travel)
+                /*
+                int commaPos = 0;
+                while ((commaPos = csv.IndexOf(';')) != -1) {
+                    string currentCoordCSV = csv.Remove(commaPos);
+                    int commaCount = currentCoordCSV.Count(f => f == ';');
 
+                }*/
             }
 
         }
