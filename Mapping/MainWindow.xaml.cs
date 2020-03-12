@@ -15,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Microsoft.Maps.MapControl.WPF;
+using Microsoft.Win32;
 using MyCartographyObjects;
 
 namespace Mapping
@@ -64,7 +65,7 @@ namespace Mapping
         {
             InitializeComponent();
 
-            MapData = new MyPersonnalMapData(MyMap, "Florent", "Banneux");
+            MapData = new MyPersonnalMapData("Florent", "Banneux");
 
             DrawMapDataElements(); // Draw defaults elements, maybe useless later
 
@@ -345,16 +346,8 @@ namespace Mapping
                             if (cartoObj.IsPointClose(clickCoordonnees, _PRECISION)) {
                                 somethingToRemove = true;
                                 toRemove = iCartoObj;
-                                if (iCartoObj is POI poi) {
-                                    Pushpin pushpinToRemove = (Pushpin)poi.Tag;
-                                    MyMap.Children.Remove(pushpinToRemove);
-                                } else if (iCartoObj is MyCartographyObjects.Polyline polyline) {
-                                    MapPolyline mapPolylineToRemove = (MapPolyline)(polyline.Tag);
-                                    MyMap.Children.Remove(mapPolylineToRemove);
-                                } else if (iCartoObj is MyCartographyObjects.Polygon polygon) {
-                                    MapPolygon mapPolygonToRemove = (MapPolygon)(polygon.Tag);
-                                    MyMap.Children.Remove(mapPolygonToRemove);
-                                }
+                                UIElement uiElement = (UIElement)(iCartoObj.Tag);
+                                MyMap.Children.Remove(uiElement);
                                 UpdateLbCartographyObjectsItemsSource();
                                 break;
                             }
@@ -469,9 +462,68 @@ namespace Mapping
                 }
             }
         }
+
+        private void MenuItem_File_Open_Click(object sender, RoutedEventArgs e)
+        {
+            string filename = MapData.GetFilenameToImport();
+            if (filename != "") {
+                foreach (ICartoObj iCartoObj in MapData.CartoObjs) {
+                    UIElement uiElement = (UIElement)(iCartoObj.Tag);
+                    MyMap.Children.Remove(uiElement);
+                }
+                MapData.LoadFromBinaryFormat(filename); // Load objects into the instance
+                foreach (ICartoObj iCartoObj in MapData.CartoObjs) {
+                    UIElement uiElement = (UIElement)(iCartoObj.Tag);
+                    MyMap.Children.Add(uiElement);
+                }
+            }
+        }
+
+        private void MenuItem_File_Save_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog = new SaveFileDialog();
+            saveFileDialog.Filter = "Binary files (*.dat)|*.dat";
+            if (saveFileDialog.ShowDialog() == true) {
+                File.WriteAllText(saveFileDialog.FileName, "");
+                if (saveFileDialog.FileName != "") {
+                    MapData.SaveAsBinaryFormat(saveFileDialog.FileName);
+                }
+            }
+        }
+
         private void MenuItem_File_POI_Import_Click(object sender, RoutedEventArgs e)
         {
-            MapData.Import();
+
+        }
+
+        private void MenuItem_File_POI_Export_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_File_Travel_Import_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_File_Travel_Export_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_File_Exit_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_Tools_About_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void MenuItem_Tools_Options_Click(object sender, RoutedEventArgs e)
+        {
+
         }
 
         #endregion

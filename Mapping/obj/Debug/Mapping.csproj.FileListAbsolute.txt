@@ -34,3 +34,4 @@ C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\Mapping.g.resources
 C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\Mapping.Properties.Resources.resources
 C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\Mapping.exe
 C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\Mapping.pdb
+C:\Compilations\C#\Labos\Phase2\Mapping\bin\Debug\TinyCsvParser.dll

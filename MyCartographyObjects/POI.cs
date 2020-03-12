@@ -57,6 +57,8 @@ namespace MyCartographyObjects
 
         public POI(POI poi) : this(poi.Latitude, poi.Longitude, poi.Description, poi.BackgroundColor) { }
 
+        public POI() : this(0, 0) { }
+
         #endregion
 
         #region Functions

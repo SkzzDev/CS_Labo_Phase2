@@ -12,21 +12,21 @@
         <DockPanel LastChildFill="False">
             <Menu DockPanel.Dock="Top">
                 <MenuItem Header="_File">
-                    <MenuItem Header="_Open" />
-                    <MenuItem Header="_Save" />
+                    <MenuItem Header="_Open" Click="MenuItem_File_Open_Click" />
+                    <MenuItem Header="_Save" Click="MenuItem_File_Save_Click" />
                     <MenuItem Header="_POI">
                         <MenuItem Header="_Import" Click="MenuItem_File_POI_Import_Click" />
-                        <MenuItem Header="_Export" />
+                        <MenuItem Header="_Export" Click="MenuItem_File_POI_Export_Click" />
                     </MenuItem>
                     <MenuItem Header="_Travel">
-                        <MenuItem Header="_Import" />
-                        <MenuItem Header="_Export" />
+                        <MenuItem Header="_Import" Click="MenuItem_File_Travel_Import_Click" />
+                        <MenuItem Header="_Export" Click="MenuItem_File_Travel_Export_Click" />
                     </MenuItem>
-                    <MenuItem Header="_Exit" />
+                    <MenuItem Header="_Exit" Click="MenuItem_File_Exit_Click" />
                 </MenuItem>
                 <MenuItem Header="_Tools">
-                    <MenuItem Header="_About" />
-                    <MenuItem Header="_Options" />
+                    <MenuItem Header="_About" Click="MenuItem_Tools_About_Click" />
+                    <MenuItem Header="_Options" Click="MenuItem_Tools_Options_Click" />
                 </MenuItem>
             </Menu>
             <ToolBarTray DockPanel.Dock="Top" Height="30">
