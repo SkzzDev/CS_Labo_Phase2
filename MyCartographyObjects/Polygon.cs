@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -9,14 +10,16 @@ using ZZUtils;
 
 namespace MyCartographyObjects
 {
-    public class Polygon : CartoObj, IPointy, ICartoObj
+
+    [Serializable]
+    public class Polygon : CartoObj, IPointy, ICartoObj, ISerializable
     {
 
         #region MemberVars
 
         private List<Coordonnees> _coordonnees = new List<Coordonnees>();
-        private Color _backgroundColor;
-        private Color _borderColor;
+        private Color _fill;
+        private Color _stroke;
         private int _thickness;
         private double _oppacity;
         private string _description;
@@ -32,16 +35,16 @@ namespace MyCartographyObjects
             set { _coordonnees = value; }
         }
 
-        public Color BackgroundColor
+        public Color Fill
         {
-            get { return _backgroundColor; }
-            set { _backgroundColor = value; }
+            get { return _fill; }
+            set { _fill = value; }
         }
 
-        public Color BorderColor
+        public Color Stroke
         {
-            get { return _borderColor; }
-            set { _borderColor = value; }
+            get { return _stroke; }
+            set { _stroke = value; }
         }
 
         public int Thickness
@@ -89,23 +92,23 @@ namespace MyCartographyObjects
 
         #region Constructors
 
-        public Polygon(Color backgroundColor, Color borderColor, double oppacity = 0.8, int thickness = 3, string description = "Surface") : base() // Main initialisation constructor
+        public Polygon(Color fill, Color stroke, double oppacity = 0.8, int thickness = 3, string description = "Surface") : base() // Main initialisation constructor
         {
-            BackgroundColor = backgroundColor;
-            BorderColor = borderColor;
+            Fill = fill;
+            Stroke = stroke;
             Opacity = oppacity;
             Thickness = thickness;
             Description = description;
         }
 
-        public Polygon(Polygon polygon) : this(polygon.BackgroundColor, polygon.BorderColor, polygon.Opacity, polygon.Thickness, polygon.Description) // Copy constructor - From a Polyline
+        public Polygon(Polygon polygon) : this(polygon.Fill, polygon.Stroke, polygon.Opacity, polygon.Thickness, polygon.Description) // Copy constructor - From a Polyline
         {
             foreach (Coordonnees coordonnee in polygon.Coordonnees) {
                 Coordonnees.Add(new Coordonnees(coordonnee));
             }
         }
 
-        public Polygon(Polyline polyline) : this(Colors.Red, polyline.LineColor, polyline.Opacity, polyline.Thickness, polyline.Description) // Copy constructor - From a Polyline
+        public Polygon(Polyline polyline) : this(Colors.Red, polyline.Stroke, polyline.Opacity, polyline.Thickness, polyline.Description) // Copy constructor - From a Polyline
         {
             foreach (Coordonnees coordonnee in polyline.Coordonnees) {
                 Coordonnees.Add(new Coordonnees(coordonnee));
@@ -113,6 +116,25 @@ namespace MyCartographyObjects
         }
 
         public Polygon() : this(Colors.Red, Colors.DarkRed) { } // Default constructor
+        public Polygon(SerializationInfo info, StreamingContext context) // Serialization constructor
+        {
+            byte R, G, B;
+            Coordonnees = (List<MyCartographyObjects.Coordonnees>)info.GetValue("Coordonnees", typeof(List<Coordonnees>));
+
+            R = (byte)info.GetValue("BG_R", typeof(byte));
+            G = (byte)info.GetValue("BG_G", typeof(byte));
+            B = (byte)info.GetValue("BG_B", typeof(byte));
+            Fill = Color.FromRgb(R, G, B);
+
+            R = (byte)info.GetValue("BD_R", typeof(byte));
+            G = (byte)info.GetValue("BD_G", typeof(byte));
+            B = (byte)info.GetValue("BD_B", typeof(byte));
+            Stroke = Color.FromRgb(R, G, B);
+
+            Thickness = (int)info.GetValue("Thickness", typeof(int));
+            Opacity = (double)info.GetValue("Opacity", typeof(double));
+            Description = (string)info.GetValue("Description", typeof(string));
+        }
 
         #endregion
 
@@ -120,7 +142,7 @@ namespace MyCartographyObjects
 
         public override string ToString()
         {
-            String toReturn = base.ToString() + "\n[#] Couleur de fond: " + BackgroundColor + "\n[#] Couleur des bordures: " + BorderColor + "\n[#] Oppacite: " + Opacity + "\n[#] Coordonnees:\n";
+            String toReturn = base.ToString() + "\n[#] Couleur de fond: " + Fill + "\n[#] Couleur des bordures: " + Stroke + "\n[#] Oppacite: " + Opacity + "\n[#] Coordonnees:\n";
             foreach (Coordonnees coordonnees in Coordonnees) {
                 toReturn += "\t" + coordonnees.ToString() + "\n";
             }
@@ -201,7 +223,7 @@ namespace MyCartographyObjects
         public Polygon Extend(double extentionSize)
         {
             if (IsValid()) {
-                Polygon toReturn = new Polygon(BackgroundColor, BorderColor, Opacity);
+                Polygon toReturn = new Polygon(Fill, Stroke, Opacity);
                 for (int i = 0; i < NbPoints; i++) {
                     ZZCoordinate previousPoint = (ZZCoordinate)Coordonnees[ZZFunctions.nmod(i - 1, NbPoints)], anglePoint = (ZZCoordinate)Coordonnees[i], nextPoint = (ZZCoordinate)Coordonnees[(i + 1) % NbPoints];
                     double alpha = ZZMath.AngleFrom3Points(previousPoint, anglePoint, nextPoint), beta = (180 - alpha) / 2.0;
@@ -278,6 +300,23 @@ namespace MyCartographyObjects
             Coordonnees topLeft = GetTopLeft(), bottomRight = GetBottomRight();
             ZZCoordinate centerOfSegment = ZZMath.GetCenterOfSegment((ZZCoordinate)topLeft, (ZZCoordinate)bottomRight);
             return new Coordonnees(centerOfSegment.Y, centerOfSegment.X);
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Coordonnees", this.Coordonnees, typeof(List<Coordonnees>));
+
+            info.AddValue("BG_R", Fill.R, typeof(byte));
+            info.AddValue("BG_G", Fill.G, typeof(byte));
+            info.AddValue("BG_B", Fill.B, typeof(byte));
+
+            info.AddValue("BD_R", Stroke.R, typeof(byte));
+            info.AddValue("BD_G", Stroke.G, typeof(byte));
+            info.AddValue("BD_B", Stroke.B, typeof(byte));
+
+            info.AddValue("Thickness", Thickness, typeof(int));
+            info.AddValue("Opacity", Opacity, typeof(double));
+            info.AddValue("Description", Description, typeof(string));
         }
 
         #endregion

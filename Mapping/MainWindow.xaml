@@ -3,73 +3,18 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:m="clr-namespace:Microsoft.Maps.MapControl.WPF;assembly=Microsoft.Maps.MapControl.WPF"
-        mc:Ignorable="d"
         xmlns:local="clr-namespace:Mapping"
-        Title="Mapping" Height="700" Width="1200"
-        ResizeMode="NoResize" KeyDown="MainWindow_KeyDown">
+        mc:Ignorable="d"
+        Title="LoginWindow" Height="277" Width="250" ResizeMode="NoResize">
     <Grid>
-        <DockPanel LastChildFill="False">
-            <Menu DockPanel.Dock="Top">
-                <MenuItem Header="_File">
-                    <MenuItem Header="_Open" Click="MenuItem_File_Open_Click" />
-                    <MenuItem Header="_Save" Click="MenuItem_File_Save_Click" />
-                    <MenuItem Header="_POI">
-                        <MenuItem Header="_Import" Click="MenuItem_File_POI_Import_Click" />
-                        <MenuItem Header="_Export" Click="MenuItem_File_POI_Export_Click" />
-                    </MenuItem>
-                    <MenuItem Header="_Travel">
-                        <MenuItem Header="_Import" Click="MenuItem_File_Travel_Import_Click" />
-                        <MenuItem Header="_Export" Click="MenuItem_File_Travel_Export_Click" />
-                    </MenuItem>
-                    <MenuItem Header="_Exit" Click="MenuItem_File_Exit_Click" />
-                </MenuItem>
-                <MenuItem Header="_Tools">
-                    <MenuItem Header="_About" Click="MenuItem_Tools_About_Click" />
-                    <MenuItem Header="_Options" Click="MenuItem_Tools_Options_Click" />
-                </MenuItem>
-            </Menu>
-            <ToolBarTray DockPanel.Dock="Top" Height="30">
-                <ToolBar ToolBarTray.IsLocked="True">
-                    <Label Content="Choose a type:"/>
-                    <ComboBox x:Name="CbActionType" VerticalAlignment="Center" Width="120" Padding="5 2">
-                        <ComboBoxItem IsSelected="True" Content="Points of interest" />
-                        <ComboBoxItem Content="Travels" />
-                        <ComboBoxItem Content="Surfaces" />
-                    </ComboBox>
-                    <Separator Height="26" Margin="10 0 10 0" VerticalAlignment="Top" Width="1"/>
-                    <Label Content="Choose an action:"/>
-                    <Button x:Name="BtnSelect" Background="DodgerBlue" Foreground="White" Padding="10 2" Click="BtnSelect_Click">Select</Button>
-                    <Button x:Name="BtnAdd" Background="LightGray" Padding="10 2" Margin="4 0 0 0" Click="BtnAdd_Click">Add</Button>
-                    <Button x:Name="BtnRemove" Background="LightGray" Padding="10 2" Margin="4 0 0 0" Click="BtnRemove_Click">Remove</Button>
-                    <Button x:Name="BtnUpdate" Background="LightGray" Padding="10 2" Margin="4 0 0 0" Click="BtnUpdate_Click">Update</Button>
-                </ToolBar>
-            </ToolBarTray>
-            <StatusBar Background="LightBlue" DockPanel.Dock="Bottom" Height="30" />
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200" MinWidth="200" />
-                    <ColumnDefinition Width="5" />
-                    <ColumnDefinition />
-                </Grid.ColumnDefinitions>
-                <StackPanel Margin="0,0,5,0">
-                    <Label Content="Elements created:" />
-                    <ListBox Name="LbCartographyObjects" HorizontalContentAlignment="Stretch" BorderThickness="0" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="LbCartographyObjects_SelectionChanged" Height="566">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <WrapPanel>
-                                    <TextBlock FontSize="12" FontWeight="Bold" VerticalAlignment="Center">
-                                        #<TextBlock Text="{Binding Id}" />
-                                    </TextBlock>
-                                    <TextBlock Text="{Binding Description}" FontSize="15" Margin="6 0 0 0" />
-                                </WrapPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
-                <GridSplitter Width="5" />
-                <m:Map x:Name="MyMap" CredentialsProvider="Ao1GPsO8BXk9YeDjuGdzrMpZUxqDmPWN5rTG2YcquymwSrdQ6jcLv-Ujbaq8r1sr" Mode="Aerial" Center="50.611265, 5.511353" ZoomLevel="16" Cursor="Cross" UseInertia="True" Grid.Column="1" Width="994" Grid.ColumnSpan="2" MouseLeftButtonUp="MyMap_MouseLeftButtonUp" MouseRightButtonDown="MyMap_MouseRightButtonDown" MouseLeftButtonDown="MyMap_MouseLeftButtonDown" />
-            </Grid>
-        </DockPanel>
+        <Rectangle Fill="#FFF4F4F5" HorizontalAlignment="Stretch" Height="47" VerticalAlignment="Top" />
+        <TextBlock FontWeight="Bold" FontSize="18" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Login" VerticalAlignment="Top"/>
+        <TextBlock HorizontalAlignment="Left" Margin="10,59,0,0" TextWrapping="Wrap" Text="Firstname:" VerticalAlignment="Top"/>
+        <TextBox x:Name="TbFirstname" HorizontalAlignment="Stretch" Height="24" Padding="2"  Margin="10,80,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="florent" />
+        <TextBlock HorizontalAlignment="Left" Margin="11,109,0,0" TextWrapping="Wrap" Text="Lastname:" VerticalAlignment="Top"/>
+        <TextBox x:Name="TbLastname" HorizontalAlignment="Stretch" Height="24" Padding="2"  Margin="10,125,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="banneux" />
+        <TextBlock HorizontalAlignment="Left" Margin="11,154,0,0" TextWrapping="Wrap" Text="E-mail:" VerticalAlignment="Top"/>
+        <TextBox x:Name="TbEmail" HorizontalAlignment="Stretch" Height="24" Padding="2"  Margin="10,170,10,0" TextWrapping="Wrap" VerticalAlignment="Top" Text="florent.banneux@student.hepl.be" />
+        <Button x:Name="BtnLogin" Content="Login" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="95" Height="26" Margin="0,0,10,10" Click="BtnLogin_Click" />
     </Grid>
 </Window>

@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -47,6 +48,7 @@
     <Compile Include="IIsPointClose.cs" />
     <Compile Include="IPointy.cs" />
     <Compile Include="MyCartoObjCoordonneesComparer.cs" />
+    <Compile Include="MyPersonnalMapData.cs" />
     <Compile Include="MyPolylineBoundingBoxComparer.cs" />
     <Compile Include="Polygon.cs" />
     <Compile Include="Polyline.cs" />

@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 
 namespace MyCartographyObjects
 {
+
+    [Serializable]
     public abstract class CartoObj : IIsPointClose
     {
 

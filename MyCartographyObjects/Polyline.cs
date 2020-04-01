@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
@@ -9,13 +10,15 @@ using ZZUtils;
 
 namespace MyCartographyObjects
 {
-    public class Polyline : CartoObj, IPointy, IEquatable<Polyline>, ICartoObj
+
+    [Serializable]
+    public class Polyline : CartoObj, IPointy, IEquatable<Polyline>, ICartoObj, ISerializable
     {
 
         #region MemberVars
 
         private List<Coordonnees> _coordonnees = new List<Coordonnees>();
-        private Color _lineColor;
+        private Color _stroke;
         private int _thickness;
         private double _oppacity;
         private string _description;
@@ -31,10 +34,10 @@ namespace MyCartographyObjects
             set { _coordonnees = value; }
         }
 
-        public Color LineColor
+        public Color Stroke
         {
-            get { return _lineColor; }
-            set { _lineColor = value; }
+            get { return _stroke; }
+            set { _stroke = value; }
         }
 
         public int Thickness
@@ -83,22 +86,22 @@ namespace MyCartographyObjects
 
         #region Constructors
 
-        public Polyline(Color lineColor, double opacity = 0.8, int thickness = 3, string description = "Travel") : base() // Main initialisation constructor
+        public Polyline(Color stroke, double opacity = 0.8, int thickness = 3, string description = "Travel") : base() // Main initialisation constructor
         {
-            LineColor = lineColor;
+            Stroke = stroke;
             Opacity = opacity;
             Thickness = thickness;
             Description = description;
         }
 
-        public Polyline(Polyline polyline) : this(polyline.LineColor, polyline.Opacity, polyline.Thickness, polyline.Description) // Copy constructor - From a polyline
+        public Polyline(Polyline polyline) : this(polyline.Stroke, polyline.Opacity, polyline.Thickness, polyline.Description) // Copy constructor - From a polyline
         {
             foreach (Coordonnees coordonnee in polyline.Coordonnees) {
                 Add(new Coordonnees(coordonnee));
             }
         }
 
-        public Polyline(Polygon polygon) : this(polygon.BorderColor, polygon.Opacity, polygon.Thickness, polygon.Description) // Copy constructor - From a polygon
+        public Polyline(Polygon polygon) : this(polygon.Stroke, polygon.Opacity, polygon.Thickness, polygon.Description) // Copy constructor - From a polygon
         {
             foreach (Coordonnees coordonnee in polygon.Coordonnees) {
                 Add(new Coordonnees(coordonnee));
@@ -107,13 +110,28 @@ namespace MyCartographyObjects
 
         public Polyline() : this(Colors.Red) { } // Default constructor
 
+        public Polyline(SerializationInfo info, StreamingContext context) // Serialization constructor
+        {
+            byte R, G, B;
+            Coordonnees = (List<MyCartographyObjects.Coordonnees>)info.GetValue("Coordonnees", typeof(List<Coordonnees>));
+
+            R = (byte)info.GetValue("R", typeof(byte));
+            G = (byte)info.GetValue("G", typeof(byte));
+            B = (byte)info.GetValue("B", typeof(byte));
+            Stroke = Color.FromRgb(R, G, B);
+
+            Thickness = (int)info.GetValue("Thickness", typeof(int));
+            Opacity = (double)info.GetValue("Opacity", typeof(double));
+            Description = (string)info.GetValue("Description", typeof(string));
+        }
+
         #endregion
 
         #region Functions
 
         public override string ToString()
         {
-            String toReturn = base.ToString() + "\n[#] Couleur des traits: " + LineColor + "\n[#] Epaisseur des traits: " + Thickness + "\n[#] Coordonnees:\n";
+            String toReturn = base.ToString() + "\n[#] Couleur des traits: " + Stroke + "\n[#] Epaisseur des traits: " + Thickness + "\n[#] Coordonnees:\n";
             foreach (Coordonnees coordonnees in Coordonnees) {
                 toReturn += "\t" + coordonnees.ToString() + "\n";
             }
@@ -216,6 +234,19 @@ namespace MyCartographyObjects
             Coordonnees topLeft = GetTopLeft(), bottomRight = GetBottomRight();
             ZZCoordinate centerOfSegment = ZZMath.GetCenterOfSegment((ZZCoordinate)topLeft, (ZZCoordinate)bottomRight);
             return new Coordonnees(centerOfSegment.Y, centerOfSegment.X);
+        }
+
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Coordonnees", this.Coordonnees, typeof(List<Coordonnees>));
+
+            info.AddValue("R", Stroke.R, typeof(byte));
+            info.AddValue("G", Stroke.G, typeof(byte));
+            info.AddValue("B", Stroke.B, typeof(byte));
+
+            info.AddValue("Thickness", Thickness, typeof(int));
+            info.AddValue("Opacity", Opacity, typeof(double));
+            info.AddValue("Description", Description, typeof(string));
         }
 
         #endregion

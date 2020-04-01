@@ -1,24 +1,14 @@
 ### Problèmes:
 
-	La carte bouge aléatoirement lors de l'ajout d'éléments?
-
-	MyMap.SetView(location, MyMap.ZoomLevel);
-	> Bug lorsqu'elle est appellée plus d'une fois trop rapidement, elle renvoit totalement ailleurs
-
 	L'event MouseMove est appellé lors d'un MouseDown et/ou MouseUp, même si la souris n'a pas bougé
 
     Import() dans MyPersonnalMapData(): Lors qu'on importe un POI, comment utiliser AddPushpin() de MainWindow?
-
-    LbCartographyObjects_SelectionChanged(), les MapPolyline et MapPolygon ne changent pas de couleur?
 
 
 ### To do list:
 
 	Lors qu'on ajoute un POI, si on clique quelque part, qu'on bouge la souris en drag, et qu'on revient pile au même pixel, le POI ne doit pas s'ajouter (c'est le cas pour l'instant)
 
-	Importation d'un trajet
-
-	Exportation trajet/POI
-
+	Importation/Export trajet/POI
 
 

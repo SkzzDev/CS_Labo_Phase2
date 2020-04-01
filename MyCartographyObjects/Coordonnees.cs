@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,7 +9,9 @@ using ZZUtils;
 
 namespace MyCartographyObjects
 {
-    public class Coordonnees : CartoObj
+
+    [Serializable]
+    public class Coordonnees : CartoObj, ISerializable
     {
 
         #region MemberVars
@@ -46,6 +49,12 @@ namespace MyCartographyObjects
 
         public Coordonnees(Coordonnees coordonnee) : this(coordonnee.Latitude, coordonnee.Longitude) { }
 
+        public Coordonnees(SerializationInfo info, StreamingContext context) // Serialization constructor
+        {
+            Latitude = (double)info.GetValue("Latitude", typeof(double));
+            Longitude = (double)info.GetValue("Longitude", typeof(double));
+        }
+
         #endregion
 
         #region Functions
@@ -72,6 +81,12 @@ namespace MyCartographyObjects
         public override string ToCSV()
         {
             return Latitude + ";" + Longitude;
+        }
+
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.AddValue("Latitude", Latitude, typeof(double));
+            info.AddValue("Longitude", Longitude, typeof(double));
         }
 
         #endregion

@@ -1,19 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace MyCartographyObjects
 {
-    public class POI : Coordonnees, ICartoObj
+
+    [Serializable]
+    public class POI : Coordonnees, ICartoObj, ISerializable
     {
 
         #region MemberVars
 
         private string _description;
-        private Color _backgroundColor;
+        private Color _fill;
         private object _tag;
 
         #endregion
@@ -26,10 +29,10 @@ namespace MyCartographyObjects
             set { _description = value; }
         }
 
-        public Color BackgroundColor
+        public Color Fill
         {
-            get { return _backgroundColor; }
-            set { _backgroundColor = value; }
+            get { return _fill; }
+            set { _fill = value; }
         }
 
         public object Tag
@@ -42,22 +45,36 @@ namespace MyCartographyObjects
 
         #region Constructors
 
-        public POI(double latitude, double longitude, string description, Color backgroundColor) : base(latitude, longitude)
+        public POI(double latitude, double longitude, string description, Color fill) : base(latitude, longitude) // 1 of 2 main initialisation constructor
         {
             Description = description;
-            BackgroundColor = backgroundColor;
+            Fill = fill;
         }
 
-        public POI(double latitude = 0, double longitude = 0, string description = "Default") : this(latitude, longitude, description, Colors.Red) { }
+        public POI(double latitude = 0, double longitude = 0, string description = "Default") : this(latitude, longitude, description, Colors.Red) { } // 2 of 2 main initialisation constructor
 
         public POI(string csv)
         {
             ImportCSV(csv);
         }
 
-        public POI(POI poi) : this(poi.Latitude, poi.Longitude, poi.Description, poi.BackgroundColor) { }
+        public POI(POI poi) : this(poi.Latitude, poi.Longitude, poi.Description, poi.Fill) { } // Copy constructor
 
-        public POI() : this(0, 0) { }
+        public POI() : this(0, 0) { } // Default constructor
+
+        public POI(SerializationInfo info, StreamingContext context) // Serialization constructor
+        {
+            byte R, G, B;
+            Latitude = (double)info.GetValue("Latitude", typeof(double));
+            Longitude = (double)info.GetValue("Longitude", typeof(double));
+
+            R = (byte)info.GetValue("R", typeof(byte));
+            G = (byte)info.GetValue("G", typeof(byte));
+            B = (byte)info.GetValue("B", typeof(byte));
+            Fill = Color.FromRgb(R, G, B);
+
+            Description = (string)info.GetValue("Description", typeof(string));
+        }
 
         #endregion
 
@@ -95,6 +112,15 @@ namespace MyCartographyObjects
         public Coordonnees GetCenter()
         {
             return new Coordonnees(Latitude, Longitude);
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info, context);
+            info.AddValue("R", Fill.R, typeof(byte));
+            info.AddValue("G", Fill.G, typeof(byte));
+            info.AddValue("B", Fill.B, typeof(byte));
+            info.AddValue("Description", Description, typeof(string));
         }
 
         #endregion
