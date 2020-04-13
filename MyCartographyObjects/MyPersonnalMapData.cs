@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Xml.Serialization;
+using CsvHelper;
 using Microsoft.Win32;
 using MyCartographyObjects;
 
@@ -24,8 +26,8 @@ namespace MyCartographyObjects
         private string _lastname = "";
         private string _email = "";
         private ObservableCollection<ICartoObj> _iCartoObjs = new ObservableCollection<ICartoObj>();
-        private static readonly string CSVDir = @"C:\Compilations\C#\Labos\Phase2\csvs";
-        private string _binariesDir = @"C:\Compilations\C#\Labos\Phase2\binaries";
+        public static readonly string CSVS_DIR = @"C:\Compilations\C#\Labos\Phase2\csvs";
+        public static readonly string BINARIES_DIR = @"C:\Compilations\C#\Labos\Phase2\binaries";
 
         #endregion
 
@@ -52,12 +54,6 @@ namespace MyCartographyObjects
         public ObservableCollection<ICartoObj> ICartoObjs
         {
             get { return _iCartoObjs;  }
-        }
-
-        public string BinariesDir
-        {
-            get { return _binariesDir; }
-            set { _binariesDir = value; }
         }
 
         #endregion
@@ -111,19 +107,23 @@ namespace MyCartographyObjects
 
         }
 
-        public string GetFilenameToOpen()
+        public string GetFilenameToOpen(string ext = "dat")
         {
-            if (Directory.Exists(BinariesDir)) {
+            string dir = (ext == "dat") ? BINARIES_DIR : CSVS_DIR;
+            if (Directory.Exists(dir)) {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "Binary files (*.dat)|*.dat";
-                openFileDialog.InitialDirectory = BinariesDir;
+                if (ext == "dat")
+                    openFileDialog.Filter = "Binary files (*.dat)|*.dat";
+                else if (ext == "csv")
+                    openFileDialog.Filter = "CSV files (*.csv)|*.csv";
+                openFileDialog.InitialDirectory = dir;
                 if (openFileDialog.ShowDialog() == true) {
                     return openFileDialog.FileName;
                 } else {
                     Console.WriteLine("Erreur ouverture boite dialogue lors de l'importation de fichier");
                 }
             } else {
-                Console.WriteLine(@"Le répertoire « {0} » n'existe pas", BinariesDir);
+                Console.WriteLine("Le répertoire « " + dir + " » n'existe pas");
             }
             return "";
         }
@@ -163,6 +163,33 @@ namespace MyCartographyObjects
                     }
                 }
             }
+        }
+
+        public bool LoadFromCsvFormat(string filename, string type, List<Coordonnees> coordList)
+        {
+            coordList.Clear();
+            using (var reader = new StreamReader(filename)) {
+                while (!reader.EndOfStream) {
+                    string line = reader.ReadLine();
+                    String[] values = line.Split(';');
+                    if (values.Length == 2) {
+                        Coordonnees newCoord = new Coordonnees(Convert.ToDouble(values[0]), Convert.ToDouble(values[1]));
+                        coordList.Add(newCoord);
+                    } else if (values.Length == 3) {
+                        POI newPOI = new POI(Convert.ToDouble(values[0]), Convert.ToDouble(values[1]), values[2]);
+                        coordList.Add(newPOI);
+                    }
+                }
+            }
+            if (coordList.Count() > 0) {
+                if (type == "POI") {
+                    return (coordList.Count() == 1);
+                } else if (type == "Travel") {
+                    return (coordList.Count() > 1);
+                }
+                return false;
+            }
+            return true;
         }
 
     }

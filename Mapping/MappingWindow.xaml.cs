@@ -83,9 +83,9 @@ namespace Mapping
                 Locations = new LocationCollection()
             };
 
-            string sessionFileFullPath = MapData.BinariesDir + "\\" + MapData.GetSessionFilename();
+            string sessionFileFullPath = MyPersonnalMapData.BINARIES_DIR + "\\" + MapData.GetSessionFilename();
             if (File.Exists(sessionFileFullPath)) { // If the user has a session file
-                LoadBinaryFile(MapData.BinariesDir + "\\" + MapData.GetSessionFilename());
+                LoadBinaryFile(MyPersonnalMapData.BINARIES_DIR + "\\" + MapData.GetSessionFilename());
             } else {
                 File.WriteAllText(sessionFileFullPath, ""); // If not, we create a new file without any data
             }
@@ -551,45 +551,105 @@ namespace Mapping
             string filename = MapData.GetFilenameToOpen();
             if (File.Exists(filename)) {
                 LoadBinaryFile(filename);
-            } else {
-
             }
         }
 
         private void MenuItem_File_Save_Click(object sender, RoutedEventArgs e)
         {
-            /*
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "Binary files (*.dat)|*.dat";
-            if (saveFileDialog.ShowDialog() == true) {
-                if (saveFileDialog.FileName != "") {
-                    File.WriteAllText(saveFileDialog.FileName, "");
-                    MapData.SaveAsBinaryFormat(saveFileDialog.FileName);
-                }
-            }*/
-            string sessionFileFullPath = MapData.BinariesDir + "\\" + MapData.GetSessionFilename();
+            string sessionFileFullPath = MyPersonnalMapData.BINARIES_DIR + "\\" + MapData.GetSessionFilename();
             File.WriteAllText(sessionFileFullPath, "");
             MapData.SaveAsBinaryFormat(sessionFileFullPath);
         }
 
         private void MenuItem_File_POI_Import_Click(object sender, RoutedEventArgs e)
         {
-
+            string filename = MapData.GetFilenameToOpen("csv");
+            if (File.Exists(filename)) {
+                List<Coordonnees> coordList = new List<Coordonnees>();
+                if (MapData.LoadFromCsvFormat(filename, "POI", coordList)) {
+                    POI poiToAdd = new POI((POI)coordList[0]);
+                    Location locationNewPOI = new Location(poiToAdd.Latitude, poiToAdd.Longitude);
+                    Pushpin newPushpin = new Pushpin {
+                        Location = locationNewPOI,
+                        Background = Brushes.Red
+                    };
+                    poiToAdd.Tag = newPushpin;
+                    MapData.Add(poiToAdd);
+                    MyMap.Children.Add(newPushpin);
+                } else {
+                    MessageBox.Show("Ce CSV n'est pas un POI !", "Attention!", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
         }
 
         private void MenuItem_File_POI_Export_Click(object sender, RoutedEventArgs e)
         {
-
+            if (LbCartographyObjects.SelectedIndex != -1) {
+                if (LbCartographyObjects.SelectedItem is POI poi) {
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.Filter = "CSV files (*.csv)|*.csv";
+                    saveFileDialog.Title = "Sauvegarder un nouveau POI";
+                    saveFileDialog.ShowDialog();
+                    if (saveFileDialog.FileName != "") {
+                        File.WriteAllText(saveFileDialog.FileName, poi.Latitude.ToString() + ";" + poi.Longitude.ToString() + ";" + poi.Description);
+                    }
+                } else {
+                    MessageBox.Show("L'élément sélectionné n'est pas un POI.", "Attention!", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
         }
 
         private void MenuItem_File_Travel_Import_Click(object sender, RoutedEventArgs e)
         {
-
+            string filename = MapData.GetFilenameToOpen("csv");
+            if (File.Exists(filename)) {
+                List<Coordonnees> coordList = new List<Coordonnees>();
+                if (MapData.LoadFromCsvFormat(filename, "Travel", coordList)) {
+                    MyCartographyObjects.Polyline newPolyline = new MyCartographyObjects.Polyline();
+                    LocationCollection locations = new LocationCollection();
+                    foreach (Coordonnees coord in coordList) {
+                        newPolyline.Add(coord);
+                        Location location = new Location(coord.Latitude, coord.Longitude);
+                        locations.Add(location);
+                    }
+                    MapData.Add(newPolyline);
+                    MapPolyline newMapPolyline = new MapPolyline() {
+                        Stroke = new SolidColorBrush(newPolyline.Stroke),
+                        StrokeThickness = newPolyline.Thickness,
+                        Opacity = newPolyline.Opacity,
+                        Locations = locations
+                    };
+                    newPolyline.Tag = newMapPolyline;
+                    MyMap.Children.Add(newMapPolyline);
+                } else {
+                    MessageBox.Show("L'élément sélectionné n'est pas un trajet.", "Attention!", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
         }
 
         private void MenuItem_File_Travel_Export_Click(object sender, RoutedEventArgs e)
         {
-
+            if (LbCartographyObjects.SelectedIndex != -1) {
+                if (LbCartographyObjects.SelectedItem is MyCartographyObjects.Polyline polyline) {
+                    SaveFileDialog saveFileDialog = new SaveFileDialog();
+                    saveFileDialog.Filter = "CSV files (*.csv)|*.csv";
+                    saveFileDialog.Title = "Sauvegarder un nouveau trajet";
+                    saveFileDialog.ShowDialog();
+                    if (saveFileDialog.FileName != "") {
+                        string toWrite = "";
+                        foreach (Coordonnees coord in polyline.Coordonnees) {
+                            toWrite += coord.Latitude.ToString() + ";" + coord.Longitude.ToString();
+                            if (coord is POI poi) {
+                                toWrite += ";" + poi.Description;
+                            }
+                            toWrite += Environment.NewLine;
+                        }
+                        File.WriteAllText(saveFileDialog.FileName, toWrite);
+                    }
+                } else {
+                    MessageBox.Show("L'élément sélectionné n'est pas un trajet.", "Attention!", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
         }
 
         private void MenuItem_File_Exit_Click(object sender, RoutedEventArgs e)

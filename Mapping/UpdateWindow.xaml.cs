@@ -167,6 +167,7 @@ namespace Mapping
                 mapPolygon.Fill = new SolidColorBrush(savedPolygon.Fill);
                 mapPolygon.Stroke = new SolidColorBrush(savedPolygon.Stroke);
             }
+            send?.Invoke();
             Close();
         }
     }
