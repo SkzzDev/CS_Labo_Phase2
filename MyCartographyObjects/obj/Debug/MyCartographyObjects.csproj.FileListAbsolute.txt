@@ -103,9 +103,8 @@ C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\System.Xml.XmlDoc
 C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\System.Xml.XmlSerializer.dll
 C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\System.Xml.XPath.dll
 C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\System.Xml.XPath.XDocument.dll
-C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\CsvHelper.dll
 C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
 C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\System.Threading.Tasks.Extensions.dll
-C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\CsvHelper.xml
 C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
 C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\bin\Debug\System.Threading.Tasks.Extensions.xml
+C:\Compilations\C#\Labos\Phase2\MyCartographyObjects\obj\Debug\MyCartographyObjects.csproj.CoreCompileInputs.cache

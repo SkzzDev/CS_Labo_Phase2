@@ -37,8 +37,6 @@ namespace Mapping
 
         #region Properties
 
-        public string DefaultPath { get; set; } = @"C:\Compilations\C#\Labos\Phase2\binaries\sessions";
-
         public EditModes EditMode { get; set; } = EditModes.Select;
 
         #region Surface
@@ -665,7 +663,7 @@ namespace Mapping
 
         private void MenuItem_Tools_Options_Click(object sender, RoutedEventArgs e)
         {
-            OptionsWindow optionsWindow = new OptionsWindow(LbCartographyObjects.Background, LbCartographyObjects.Foreground, DefaultPath);
+            OptionsWindow optionsWindow = new OptionsWindow(LbCartographyObjects.Background, LbCartographyObjects.Foreground, MyPersonnalMapData.BINARIES_DIR);
             optionsWindow.send = EventUpdateOptions;
             optionsWindow.Show();
         }
@@ -674,7 +672,7 @@ namespace Mapping
         {
             LbCartographyObjects.Background = new SolidColorBrush(e.LbBackground);
             LbCartographyObjects.Foreground = new SolidColorBrush(e.LbForeground);
-            DefaultPath = e.Path;
+            MyPersonnalMapData.BINARIES_DIR = e.Path;
         }
 
         private void UpdateMapAndListBox()

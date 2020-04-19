@@ -58,3 +58,4 @@ C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\UpdateWindow.g.cs
 C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\UpdateWindow.baml
 C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\MappingWindow.g.cs
 C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\MappingWindow.baml
+C:\Compilations\C#\Labos\Phase2\Mapping\obj\Debug\Mapping.csproj.CoreCompileInputs.cache

@@ -25,8 +25,8 @@ namespace MyCartographyObjects
         private string _lastname = "";
         private string _email = "";
         private ObservableCollection<ICartoObj> _iCartoObjs = new ObservableCollection<ICartoObj>();
-        public static readonly string CSVS_DIR = @"C:\Compilations\C#\Labos\Phase2\csvs";
-        public static readonly string BINARIES_DIR = @"C:\Compilations\C#\Labos\Phase2\binaries";
+        public static string CSVS_DIR = "";
+        public static string BINARIES_DIR = "";
 
         #endregion
 
@@ -64,6 +64,12 @@ namespace MyCartographyObjects
             Firstname = firstname;
             Lastname = lastname;
             Email = email;
+
+            string dir = Directory.GetCurrentDirectory();
+            int pos = dir.LastIndexOf("\\Mapping\\bin");
+
+            BINARIES_DIR = dir.Substring(0, pos) + "\\binaries";
+            CSVS_DIR = dir.Substring(0, pos) + "\\CSVS";
         }
 
         public MyPersonnalMapData() : this("", "") { }
