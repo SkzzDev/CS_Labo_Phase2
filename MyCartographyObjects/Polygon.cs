@@ -101,6 +101,12 @@ namespace MyCartographyObjects
             Description = description;
         }
 
+        public Polygon(List<Coordonnees> coords) : base() // Random constructor
+        {
+            foreach (Coordonnees coord in coords)
+                Add(new Coordonnees(coord));
+        }
+
         public Polygon(Polygon polygon) : this(polygon.Fill, polygon.Stroke, polygon.Opacity, polygon.Thickness, polygon.Description) // Copy constructor - From a Polyline
         {
             foreach (Coordonnees coordonnee in polygon.Coordonnees) {

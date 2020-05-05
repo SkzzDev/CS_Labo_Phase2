@@ -94,6 +94,12 @@ namespace MyCartographyObjects
             Description = description;
         }
 
+        public Polyline(List<Coordonnees> coords) : base() // Random constructor
+        {
+            foreach (Coordonnees coord in coords)
+                Add(new Coordonnees(coord));
+        }
+
         public Polyline(Polyline polyline) : this(polyline.Stroke, polyline.Opacity, polyline.Thickness, polyline.Description) // Copy constructor - From a polyline
         {
             foreach (Coordonnees coordonnee in polyline.Coordonnees) {
