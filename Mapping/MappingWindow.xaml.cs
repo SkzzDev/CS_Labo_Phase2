@@ -93,20 +93,6 @@ namespace Mapping
 
         #region Functions
 
-        private void DrawMapDataElements() // Draw defaults elements, maybe useless later
-        {
-            foreach (ICartoObj iCartoObj in MapData.ICartoObjs) {
-                if (iCartoObj is POI poi) {
-                    Pushpin newPushpin = new Pushpin {
-                        Location = new Location(poi.Latitude, poi.Longitude),
-                        Background = Brushes.Red
-                    };
-                    iCartoObj.Tag = newPushpin;
-                    MyMap.Children.Add(newPushpin);
-                }
-            }
-        }
-
         private void UpdateLbCartographyObjectsItemsSource()
         {
             LbCartographyObjects.ItemsSource = null;
@@ -278,49 +264,45 @@ namespace Mapping
         private void LoadBinaryFile(string filename)
         {
             if (filename != "") {
-                if (filename != MapData.GetSessionFilename()) { // Load objects into the instance
-                    MapData.LoadFromBinaryFormat(filename);
-                    MyMap.Children.Clear(); // Clear the map
-                    foreach (ICartoObj iCartoObj in MapData.ICartoObjs) { // Add the new objects on the map
-                        UIElement uiElement = new UIElement();
-                        Console.WriteLine(iCartoObj);
-                        if (iCartoObj is MyCartographyObjects.POI poi) {
-                            Location location = new Location(poi.Latitude, poi.Longitude);
-                            uiElement = new Pushpin {
-                                Location = location,
-                                Background = new SolidColorBrush(poi.Fill)
-                            };
-                        } else if (iCartoObj is MyCartographyObjects.Polyline polyline) {
-                            LocationCollection locations = new LocationCollection();
-                            foreach (Coordonnees coordonnees in polyline.Coordonnees) {
-                                locations.Add(new Location(coordonnees.Latitude, coordonnees.Longitude));
-                            }
-                            uiElement = new MapPolyline() {
-                                Stroke = new SolidColorBrush(polyline.Stroke),
-                                StrokeThickness = polyline.Thickness,
-                                Opacity = polyline.Opacity,
-                                Locations = locations
-                            };
-                        } else if (iCartoObj is MyCartographyObjects.Polygon polygon) {
-                            LocationCollection locations = new LocationCollection();
-                            foreach (Coordonnees coordonnees in polygon.Coordonnees) {
-                                locations.Add(new Location(coordonnees.Latitude, coordonnees.Longitude));
-                            }
-                            uiElement = new MapPolygon() {
-                                Fill = new SolidColorBrush(polygon.Fill),
-                                Stroke = new SolidColorBrush(polygon.Stroke),
-                                StrokeThickness = polygon.Thickness,
-                                Opacity = polygon.Opacity,
-                                Locations = locations
-                            };
+                MapData.LoadFromBinaryFormat(filename);
+                MyMap.Children.Clear(); // Clear the map
+                foreach (ICartoObj iCartoObj in MapData.ICartoObjs) { // Add the new objects on the map
+                    UIElement uiElement = new UIElement();
+                    Console.WriteLine(iCartoObj);
+                    if (iCartoObj is MyCartographyObjects.POI poi) {
+                        Location location = new Location(poi.Latitude, poi.Longitude);
+                        uiElement = new Pushpin {
+                            Location = location,
+                            Background = new SolidColorBrush(poi.Fill)
+                        };
+                    } else if (iCartoObj is MyCartographyObjects.Polyline polyline) {
+                        LocationCollection locations = new LocationCollection();
+                        foreach (Coordonnees coordonnees in polyline.Coordonnees) {
+                            locations.Add(new Location(coordonnees.Latitude, coordonnees.Longitude));
                         }
-                        iCartoObj.Tag = uiElement;
-                        MyMap.Children.Add(uiElement);
+                        uiElement = new MapPolyline() {
+                            Stroke = new SolidColorBrush(polyline.Stroke),
+                            StrokeThickness = polyline.Thickness,
+                            Opacity = polyline.Opacity,
+                            Locations = locations
+                        };
+                    } else if (iCartoObj is MyCartographyObjects.Polygon polygon) {
+                        LocationCollection locations = new LocationCollection();
+                        foreach (Coordonnees coordonnees in polygon.Coordonnees) {
+                            locations.Add(new Location(coordonnees.Latitude, coordonnees.Longitude));
+                        }
+                        uiElement = new MapPolygon() {
+                            Fill = new SolidColorBrush(polygon.Fill),
+                            Stroke = new SolidColorBrush(polygon.Stroke),
+                            StrokeThickness = polygon.Thickness,
+                            Opacity = polygon.Opacity,
+                            Locations = locations
+                        };
                     }
-                    UpdateLbCartographyObjectsItemsSource();
-                } else {
-                    MessageBox.Show("Ce fichier de données ne vous appartient pas.", "Erreur!", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    iCartoObj.Tag = uiElement;
+                    MyMap.Children.Add(uiElement);
                 }
+                UpdateLbCartographyObjectsItemsSource();
             } else {
                 // Cancelled or failled at opening
             }
@@ -442,9 +424,6 @@ namespace Mapping
                             updateWindow.send = UpdateMapAndListBox;
                             updateWindow.Show();
                         }
-
-                        // TO DO: CREATE AN EVENT THAT UPDATE BOTH SIDE ON TEST, OK AND CANCEL BUTTON!!
-                        MyMap.UpdateLayout();
                         UpdateLbCartographyObjectsItemsSource();
                         break;
                 }

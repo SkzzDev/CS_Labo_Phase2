@@ -27,6 +27,12 @@ namespace Mapping
 
         public OptionsUpdateTool send;
 
+        public Brush LbInitBackground { get; set; }
+
+        public Brush LbInitForeground { get; set; }
+
+        public string InitPath { get; set; }
+
         #endregion
 
         #region Constructors
@@ -34,6 +40,10 @@ namespace Mapping
         public OptionsWindow(Brush lbBackground, Brush lbForeground, string path)
         {
             InitializeComponent();
+
+            LbInitBackground = lbBackground;
+            LbInitForeground = lbForeground;
+            InitPath = path;
 
             TbPath.Text = path;
             CpBackground.SelectedColor = (Color)ColorConverter.ConvertFromString(lbBackground.ToString());
@@ -55,7 +65,7 @@ namespace Mapping
 
         private void BtnCancel_Click(object sender, RoutedEventArgs e)
         {
-            SendUpdateEvent();
+            send?.Invoke(this, new OptionsEventArgs((Color)ColorConverter.ConvertFromString(LbInitBackground.ToString()), (Color)ColorConverter.ConvertFromString(LbInitForeground.ToString()), InitPath));
             Close();
         }
 

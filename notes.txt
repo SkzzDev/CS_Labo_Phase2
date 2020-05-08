@@ -8,3 +8,4 @@
 	Lors qu'on ajoute un POI, si on clique quelque part, qu'on bouge la souris en drag, et qu'on revient pile au même pixel, le POI ne doit pas s'ajouter (c'est le cas pour l'instant)
 
 
+Vendredi 9h

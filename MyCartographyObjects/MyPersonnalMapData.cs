@@ -157,15 +157,15 @@ namespace MyCartographyObjects
         {
             if (File.Exists(filename)) {
                 BinaryFormatter binFormat = new BinaryFormatter();
+                ObservableCollection<ICartoObj> newCollection = new ObservableCollection<ICartoObj>();
                 using (Stream fStream = File.OpenRead(filename)) {
-                    ObservableCollection<ICartoObj> newCollection = new ObservableCollection<ICartoObj>();
                     if (fStream.Length != 0) {
                         newCollection = (ObservableCollection<ICartoObj>)binFormat.Deserialize(fStream);
                     }
-                    Clear();
-                    foreach (ICartoObj iCartoObj in newCollection) {
-                        Add(iCartoObj);
-                    }
+                }
+                Clear();
+                foreach (ICartoObj iCartoObj in newCollection) {
+                    Add(iCartoObj);
                 }
             }
         }
@@ -176,7 +176,7 @@ namespace MyCartographyObjects
             using (var reader = new StreamReader(filename)) {
                 while (!reader.EndOfStream) {
                     string line = reader.ReadLine();
-                    String[] values = line.Split(';');
+                    string[] values = line.Split(';');
                     if (values.Length == 2) {
                         Coordonnees newCoord = new Coordonnees(Convert.ToDouble(values[0]), Convert.ToDouble(values[1]));
                         coordList.Add(newCoord);
@@ -198,4 +198,5 @@ namespace MyCartographyObjects
         }
 
     }
+
 }
